@@ -1,25 +1,78 @@
 import React from 'react';
 import logo from './logo.svg';
-import './App.css';
+import { createTheme, useTheme } from '@mui/material';
+//routes
+import { Route, Routes } from 'react-router-dom';
+//Components
+import { Home } from './Pages/Home';
+import { AccountDetails } from './Pages/AccountDetails';
+
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: '#7986cb',
+      dark: '#1e1e2d'
+    },
+    secondary: {
+      main: '#ff8a65',
+      contrastText: 'rgba(255,255,255,0.87)',
+    },
+    divider: 'rgba(129,129,129,0.4)',
+  },
+  typography: {
+    h1: {
+      fontFamily: 'Poppins, sans-serif',
+      fontWeight: 400,
+    },
+    h2: {
+      fontFamily: 'Poppins, sans-serif',
+      fontWeight: 400,
+    },
+    h3: {
+      fontFamily: 'Poppins, sans-serif',
+      fontWeight: 400,
+    },
+    h4: {
+      fontFamily: 'Poppins, sans-serif',
+      fontWeight: 400,
+    },
+    h5: {
+      fontFamily: 'Poppins, sans-serif',
+      fontWeight: 400,
+    },
+    h6: {
+      fontFamily: 'Poppins, sans-serif',
+      fontWeight: 400,
+    },
+    subtitle1: {
+      fontFamily: 'Poppins, sans-serif',
+      fontWeight: 400,
+    },
+    subtitle2: {
+      fontFamily: 'Poppins, sans-serif',
+      fontWeight: 400,
+    },
+    body1: {
+      fontFamily: 'Poppins, sans-serif',
+      fontWeight: 300,
+    },
+    body2: {
+      fontFamily: 'Poppins, sans-serif',
+      fontWeight: 300,
+    },
+    fontFamily: 'Poppins, sans-serif',
+  },
+})
 
 function App() {
+  const theme = useTheme();
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Routes>
+      <Route path='/Financemanager'>
+        <Route index element={<Home theme={theme}/>}/>
+        <Route path='Details' element={<AccountDetails theme={theme}/>}/>
+      </Route>
+    </Routes>
   );
 }
 
