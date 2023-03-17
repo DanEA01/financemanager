@@ -1,16 +1,28 @@
 import { Box, CssBaseline, ThemeProvider } from '@mui/material'
-import React from 'react'
+import React, { useState } from 'react'
 import { Accounts } from '../Components/Accounts'
-import { DrawerHeader, Sidebar } from '../Components/Sidebar'
-import { Stats } from '../Components/Stats'
+import { Sidebar } from '../Components/Sidebar'
+import { ExpensesStats } from '../Components/ExpensesStats'
+import { FMDialog } from '../Components/FMDialog'
+import { NewAccount } from '../Components/Forms/NewAccount'
 
-export const AccountDetails = (props:any) => {
+export const Expenses = (props:any) => {
+  const [openDialog, setopenDialog] = useState(false);
+
+  const addAccountDialog = () => {
+    setopenDialog(true);
+  }
+
+  const handleClose = () => {
+    setopenDialog(false);
+  };
+
   return (
     <>
     <ThemeProvider theme={props.theme}>
       <Box sx={{ display: "flex" }}>
         <CssBaseline />  
-          <Sidebar index="0" username="Daniel Enriquez" brandName="Finance Manager"/>
+          <Sidebar index={2} username="Daniel Enriquez" brandName="Gastos"/>
           <Box component="main" sx={{ 
             backgroundColor: 'rgb(238, 242, 246)',
             width: 'calc(100% - 260px)',
@@ -23,10 +35,11 @@ export const AccountDetails = (props:any) => {
             transition: 'margin 225ms cubic-bezier(0, 0, 0.2, 1) 0ms',
             marginLeft: '0px',
             overflowX: 'hidden'}}>
-            <Accounts />
-            <Stats />
+            <Accounts addAccount={addAccountDialog}/>
+            <ExpensesStats />
           </Box>
       </Box>
+      <FMDialog open={openDialog} close={handleClose} form={<NewAccount />} fullWidth={true} width="md"/>
     </ThemeProvider>
     </>
   )

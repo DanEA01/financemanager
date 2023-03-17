@@ -1,6 +1,11 @@
+.card {
+    border-radius: 10px !important;
+}
+
 .card1{
     background-color: #009688 !important;
     position: relative;
+    border-radius: 10px !important;
 }
 
 .card1-circle1 {
@@ -45,6 +50,7 @@
 .card2{
     background-color: #E53935 !important;
     position: relative;
+    border-radius: 10px !important;
 }
 
 .card2-circle1 {
@@ -83,6 +89,7 @@
 .card3{
     background-color: #3F51B5 !important;
     position: relative;
+    border-radius: 10px !important;
 }
 
 .card3-circle1 {
@@ -117,6 +124,82 @@
     font-weight: 500 !important;
 }
 
+.card4{
+    background-color: #7B1FA2 !important;
+    position: relative;
+    border-radius: 10px !important;
+}
+
+.card4-circle1 {
+    content: "";
+    position: absolute;
+    width: 210px;
+    height: 210px;
+    background: #6A1B9A;
+    border-radius: 50%;
+    top: -125px;
+    right: -15px;
+    opacity: 0.5;
+}
+
+.card4-circle2 {
+    content: "";
+    position: absolute;
+    width: 210px;
+    height: 210px;
+    background: #4A148C;
+    border-radius: 50%;
+    top: -85px;
+    right: -95px;
+}
+
+.card4-subText{
+    margin: 0px !important;
+    line-height: 1.334em !important; 
+    font-family: Roboto, sans-serif !important;
+    color: #D1C4E9 !important;
+    font-size: 1rem !important;
+    font-weight: 500 !important;
+}
+
+.card5{
+    background-color: #5C6BC0 !important;
+    position: relative;
+    border-radius: 10px !important;
+}
+
+.card5-circle1 {
+    content: "";
+    position: absolute;
+    width: 210px;
+    height: 210px;
+    background: #303F9F;
+    border-radius: 50%;
+    top: -125px;
+    right: -15px;
+    opacity: 0.5;
+}
+
+.card5-circle2 {
+    content: "";
+    position: absolute;
+    width: 210px;
+    height: 210px;
+    background: #283593;
+    border-radius: 50%;
+    top: -85px;
+    right: -95px;
+}
+
+.card5-subText{
+    margin: 0px !important;
+    line-height: 1.334em !important; 
+    font-family: Roboto, sans-serif !important;
+    color: #E8EAF6 !important;
+    font-size: 1rem !important;
+    font-weight: 500 !important;
+}
+
 .card-title {
     margin: 0px !important;
     font-size: 1.2rem !important;
@@ -139,4 +222,9 @@
     color: #546E7A !important;
     font-family: Roboto, sans-serif !important;
     line-height: 1.235 !important;
+}
+
+.expenses-li{
+    margin-bottom: 20px;
+    border-radius: 50px;
 }

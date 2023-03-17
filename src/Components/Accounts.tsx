@@ -1,4 +1,4 @@
-import { Avatar, Box, Grid, IconButton, Stack, styled, Typography } from '@mui/material'
+import { Avatar, Box, Grid, IconButton, Stack, styled, Tooltip, Typography } from '@mui/material'
 import React from 'react'
 import { CreditCard } from '../singleComponents/CreditCard'
 //icons
@@ -24,29 +24,29 @@ const cards = [
     }
   ]
 
-export const Accounts = () => {
+export const Accounts = (props:any) => {
   return (
     <>  
-        <Box sx={{ width: '100%' }}>
-        <PageTitle>
-            <Typography variant='h6'>Cuentas</Typography>
-        </PageTitle>
-        <Grid container wrap="nowrap" spacing={2} sx={{ overflow: 'auto', paddingX: '30px' }} alignItems="center">
-            {cards.map(card => (
-                <Grid item>
-                    <CreditCard cardNumber={card.cardNumber} cardName={card.cardName} cardType={card.cardType} cardDefault={card.cardDefault}/>
+        <Grid container spacing={3}>
+            <Grid item direction="row" xs={12}>
+                <Grid container spacing={3} alignItems="center" wrap="nowrap" sx={{ overflow: 'auto'}}>
+                    {cards.map(card => (
+                        <Grid item>
+                            <CreditCard cardNumber={card.cardNumber} cardName={card.cardName} cardType={card.cardType} cardDefault={card.cardDefault}/>
+                        </Grid>
+                    ))}
+                    <Grid item>
+                        <Tooltip title="Agregar Cuenta" placement="bottom" onClick={props.addAccount}>
+                            <IconButton aria-label="agregar cuenta">
+                                <Avatar>
+                                    <AddIcon />
+                                </Avatar>
+                            </IconButton>
+                        </Tooltip>
+                    </Grid>
                 </Grid>
-            ))}
-            <Grid item>
-            <IconButton aria-label="agregar cuenta">
-                <Avatar>
-                    <AddIcon />
-                </Avatar>
-            </IconButton>
             </Grid>
         </Grid>
-        </Box>
-        
     </>
   )
 }

@@ -1,19 +1,16 @@
-import { List, ListItemButton, ListItemIcon, ListItemText, styled, Theme, CSSObject, IconButton, useTheme, Toolbar, Typography, Stack, Badge, Button, Avatar, Menu, MenuItem, Divider, Chip } from '@mui/material'
+import { List, ListItemButton, ListItemIcon, ListItemText, styled, Theme, CSSObject, IconButton, useTheme, Toolbar, Typography, Stack, Badge, Button, Avatar, Menu, MenuItem, Divider, Chip, Tooltip } from '@mui/material'
 import MuiDrawer from '@mui/material/Drawer';
 import MuiListItem from '@mui/material/ListItem';
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
 import React, { useContext, useEffect, useState } from 'react'
 //icons
 import HomeIcon from '@mui/icons-material/Home';
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import LocalAtmIcon from '@mui/icons-material/LocalAtm';
+import ShoppingBagOutlinedIcon from '@mui/icons-material/ShoppingBagOutlined';
 import NotificationsIcon from '@mui/icons-material/Notifications';
-import PaymentIcon from '@mui/icons-material/Payment';
-import SettingsIcon from '@mui/icons-material/Settings';
 import LogoutIcon from '@mui/icons-material/Logout';
 import PersonIcon from '@mui/icons-material/Person';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import GroupIcon from '@mui/icons-material/Group';
 //Router
 import { useNavigate } from 'react-router-dom';
 
@@ -230,8 +227,9 @@ export const Sidebar = (props:any) => {
             <img src="/assets/img/FM Logo.svg" width={50}/>
         </DrawerHeader>
         <Divider />
-        <List>
-            <ListItem selected={props.index === 0} onClick={() => handleSelectClick('/Financemanager')}>
+        <List className='menu'>
+            <ListItem selected={props.index === 0} onClick={() => handleSelectClick('/Financemanager')} sx={{"&.Mui-selected": {backgroundColor: '#6f6f6f'} ,"&:hover": {backgroundColor: '#4d4d4d'}}}>
+              <Tooltip title="Home" placement="right">
                 <ListItemButton sx={{
                   minHeight: 48,
                   justifyContent: open ? 'initial' : 'center',
@@ -247,8 +245,10 @@ export const Sidebar = (props:any) => {
                     </ListItemIcon>
                     <ListItemText primary="Calendario" sx={{ opacity: open ? 1 : 0 }}/>
                 </ListItemButton>
+              </Tooltip>
             </ListItem>
-            <ListItem selected={props.index === 1} onClick={() => handleSelectClick('/FinanceManager/Details')}>
+            <ListItem selected={props.index === 1} onClick={() => handleSelectClick('/FinanceManager/Ingresos')} sx={{"&.Mui-selected": {backgroundColor: '#6f6f6f'} ,"&:hover": {backgroundColor: '#4d4d4d'}}}>
+              <Tooltip title="Ingresos" placement="right">
                 <ListItemButton sx={{
                   minHeight: 48,
                   justifyContent: open ? 'initial' : 'center',
@@ -260,10 +260,30 @@ export const Sidebar = (props:any) => {
                         mr: open ? 3 : 'auto',
                         justifyContent: 'center'
                     }}>
-                        <HomeIcon />
+                        <LocalAtmIcon />
                     </ListItemIcon>
-                    <ListItemText primary="Calendario" sx={{ opacity: open ? 1 : 0 }}/>
+                    <ListItemText primary="Ingresos" sx={{ opacity: open ? 1 : 0 }}/>
                 </ListItemButton>
+              </Tooltip>
+            </ListItem>
+            <ListItem selected={props.index === 2} onClick={() => handleSelectClick('/FinanceManager/Gastos')} sx={{"&.Mui-selected": {backgroundColor: '#6f6f6f'} ,"&:hover": {backgroundColor: '#4d4d4d'}}}>
+              <Tooltip title="Gastos" placement="right">
+                <ListItemButton sx={{
+                  minHeight: 48,
+                  justifyContent: open ? 'initial' : 'center',
+                  px: 2.5,
+                }}>
+                    <ListItemIcon sx={{
+                        minWidth: 0,
+                        color: 'white',
+                        mr: open ? 3 : 'auto',
+                        justifyContent: 'center'
+                    }}>
+                        <ShoppingBagOutlinedIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Ingresos" sx={{ opacity: open ? 1 : 0 }}/>
+                </ListItemButton>
+              </Tooltip>
             </ListItem>
         </List>
         <List sx={{marginTop:'auto'}}>

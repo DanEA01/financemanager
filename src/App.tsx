@@ -5,7 +5,8 @@ import { createTheme, useTheme } from '@mui/material';
 import { Route, Routes } from 'react-router-dom';
 //Components
 import { Home } from './Pages/Home';
-import { AccountDetails } from './Pages/AccountDetails';
+import { Expenses } from './Pages/Expenses';
+import { Income } from './Pages/Income';
 
 const theme = createTheme({
   palette: {
@@ -69,8 +70,9 @@ function App() {
   return (
     <Routes>
       <Route path='/Financemanager'>
-        <Route index element={<Home theme={theme}/>}/>
-        <Route path='Details' element={<AccountDetails theme={theme}/>}/>
+        <Route index element={<Home index="0" theme={theme}/>}/>
+        <Route path='Ingresos' element={<Income theme={theme}/>}/>
+        <Route path='Gastos' element={<Expenses theme={theme}/>}/>
       </Route>
     </Routes>
   );

@@ -4,7 +4,6 @@ import { Accounts } from '../Components/Accounts'
 import { DashboardBody } from '../Components/DashboardBody'
 import { DashboardHeader } from '../Components/DashboardHeader'
 import { DrawerHeader, Sidebar } from '../Components/Sidebar'
-import { Stats } from '../Components/Stats'
 
 export const Home = (props:any) => {
   return (
@@ -12,7 +11,7 @@ export const Home = (props:any) => {
     <ThemeProvider theme={props.theme}>
       <Box sx={{ display: "flex" }}>
         <CssBaseline />  
-          <Sidebar index="0" username="Daniel Enriquez" brandName="Finance Manager"/>
+          <Sidebar index={0} username="Daniel Enriquez" brandName="Home"/>
           <Box component="main" sx={{ 
             backgroundColor: 'rgb(238, 242, 246)',
             width: 'calc(100% - 260px)',
