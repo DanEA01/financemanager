@@ -50,7 +50,7 @@ const rows: GridRowsProp = [
     {id: 7,date: '12-01-2023',desc: 'Compra de Super',total: 750,categroy: 'Super',type: 'Variable',obs: ''},
 ]
 
-export const ExpensesStats = () => {
+export const ExpensesStats = (props:any) => {
 
     const [graphs, setgraphs] = useState<any>({
         balance:{
@@ -617,7 +617,7 @@ export const ExpensesStats = () => {
                                                 <Typography color="white" className='card-title'>Gastos Principales a Detalle</Typography>
                                             </Grid>
                                             <Grid item xs={6} textAlign="right">
-                                                <Button variant='contained' color='primary'>Agregar Gasto</Button>
+                                                <Button variant='contained' color='primary' onClick={props.handleAddExpense}>Agregar Gasto</Button>
                                             </Grid>
                                         </Grid>
                                     </Grid>

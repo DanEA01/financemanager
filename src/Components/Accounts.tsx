@@ -36,7 +36,7 @@ export const Accounts = (props:any) => {
                         </Grid>
                     ))}
                     <Grid item>
-                        <Tooltip title="Agregar Cuenta" placement="bottom" onClick={props.addAccount}>
+                        <Tooltip title="Agregar Cuenta" placement="bottom" onClick={props.handleAddAccount}>
                             <IconButton aria-label="agregar cuenta">
                                 <Avatar>
                                     <AddIcon />

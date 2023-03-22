@@ -5,17 +5,25 @@ import { Sidebar } from '../Components/Sidebar'
 import { ExpensesStats } from '../Components/ExpensesStats'
 import { FMDialog } from '../Components/FMDialog'
 import { NewAccount } from '../Components/Forms/NewAccount'
+import { NewExpense } from '../Components/Forms/NewExpense'
 
 export const Expenses = (props:any) => {
   const [openDialog, setopenDialog] = useState(false);
+  const [choosenForm, setChoosenForm] = useState<any>(null);
 
   const addAccountDialog = () => {
+    setChoosenForm(<NewAccount />);
     setopenDialog(true);
   }
 
   const handleClose = () => {
     setopenDialog(false);
   };
+
+  const addExpenseDialog = () => {
+    setChoosenForm(<NewExpense />);
+    setopenDialog(true);
+  }
 
   return (
     <>
@@ -35,11 +43,11 @@ export const Expenses = (props:any) => {
             transition: 'margin 225ms cubic-bezier(0, 0, 0.2, 1) 0ms',
             marginLeft: '0px',
             overflowX: 'hidden'}}>
-            <Accounts addAccount={addAccountDialog}/>
-            <ExpensesStats />
+            <Accounts handleAddAccount={addAccountDialog}/>
+            <ExpensesStats handleAddExpense={addExpenseDialog}/>
           </Box>
       </Box>
-      <FMDialog open={openDialog} close={handleClose} form={<NewAccount />} fullWidth={true} width="md"/>
+      <FMDialog open={openDialog} close={handleClose} form={choosenForm} fullWidth={true} width="md"/>
     </ThemeProvider>
     </>
   )

@@ -37,7 +37,7 @@ const rows: GridRowsProp = [
     {id: 6,date: '12-01-2023',desc: 'Fondo de Ahorro',total: 2250,categroy: 'Super',type: 'Fijo',obs: ''},
 ]
 
-export const IncomeStats = () => {
+export const IncomeStats = (props:any) => {
 
     const [graphs, setgraphs] = useState<any>(
         {
@@ -242,7 +242,7 @@ export const IncomeStats = () => {
                                                 <Typography color="white" className='card-title'>Ingresos Principales a Detalle</Typography>
                                             </Grid>
                                             <Grid item xs={6} textAlign="right">
-                                                <Button variant='contained' color='primary'>Agregar Ingreso</Button>
+                                                <Button variant='contained' color='primary'  onClick={props.handleAddIncome}>Agregar Ingreso</Button>
                                             </Grid>
                                         </Grid>
                                     </Grid>

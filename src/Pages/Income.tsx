@@ -1,10 +1,31 @@
 import { Box, CssBaseline, ThemeProvider } from '@mui/material'
-import React from 'react'
+import React, { useState } from 'react'
 import { Accounts } from '../Components/Accounts'
+import { FMDialog } from '../Components/FMDialog'
+import { NewAccount } from '../Components/Forms/NewAccount'
+import { NewIncome } from '../Components/Forms/NewIncome'
 import { IncomeStats } from '../Components/IncomeStats'
+import { IncomeTabs } from '../Components/IncomeTabs'
 import { Sidebar } from '../Components/Sidebar'
 
 export const Income = (props:any) => {
+  const [openDialog, setopenDialog] = useState(false);
+  const [choosenForm, setChoosenForm] = useState<any>(null);
+
+  const addAccountDialog = () => {
+    setChoosenForm(<NewAccount />);
+    setopenDialog(true);
+  }
+
+  const handleClose = () => {
+    setopenDialog(false);
+  };
+
+  const addIncomeDialog = () => {
+    setChoosenForm(<NewIncome />);
+    setopenDialog(true);
+  }
+
     return (
         <>
         <ThemeProvider theme={props.theme}>
@@ -23,10 +44,12 @@ export const Income = (props:any) => {
                 transition: 'margin 225ms cubic-bezier(0, 0, 0.2, 1) 0ms',
                 marginLeft: '0px',
                 overflowX: 'hidden'}}>
-                <Accounts />
-                <IncomeStats />
+                <IncomeTabs />
+                <Accounts handleAddAccount={addAccountDialog}/>
+                <IncomeStats  handleAddIncome={addIncomeDialog}/>
               </Box>
           </Box>
+          <FMDialog open={openDialog} close={handleClose} form={choosenForm} fullWidth={true} width="md"/>
         </ThemeProvider>
         </>
     )
