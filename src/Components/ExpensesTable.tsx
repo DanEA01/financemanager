@@ -13,10 +13,11 @@ const gastoTypeColor = (value:string) => {
 }
 
 const columns: GridColDef[] = [
-    { field: 'date', headerName: 'Fecha', width: 100, editable: false },
-    { field: 'desc', headerName: 'Descripción', width: 200, editable: false },
-    { field: 'total', type:'number', headerName: 'Total', width: 90, editable: false },
-    { field: 'categroy', headerName: 'Categoria', width: 150, editable: false, renderCell: (params) => { 
+    { field: 'date', headerName: 'Fecha', width: 130, editable: false },
+    { field: 'title', headerName: 'Descripción', width: 200, editable: false },
+    { field: 'account', headerName: 'Cuenta', width: 100, editable: false },
+    { field: 'amount', type:'number', headerName: 'Total', width: 90, editable: false },
+    { field: 'category', headerName: 'Categoria', width: 150, editable: false, renderCell: (params) => { 
         return(<Chip sx={{backgroundColor:'#90A4AE', color: 'white'}} avatar={
         <Avatar sx={{backgroundColor:'#ffffff', width: 24, height: 24 }}>
             <LocalOfferOutlinedIcon sx={{fontSize: '1.1rem', color:'black'}}/>
@@ -27,17 +28,17 @@ const columns: GridColDef[] = [
     { field: 'type', headerName: 'Tipo', width: 120, editable: false, renderCell: (params) => { 
         return(<Chip variant='filled' sx={{backgroundColor: gastoTypeColor(params.value), color:'white'}} label={params.value} />)
     }},
-    { field: 'obs', headerName: 'Comentarios', width: 200, editable: false,}
+    { field: 'comments', headerName: 'Comentarios', width: 200, editable: false,}
 ];
 
 const rows: GridRowsProp = [
-    {id: 1,date: '12-01-2023',desc: 'Compra de Super',total: 1200,categroy: 'Super',type: 'Variable',obs: ''},
-    {id: 2,date: '12-01-2023',desc: 'Compra de Super',total: 1350,categroy: 'Super',type: 'Variable',obs: ''},
-    {id: 3,date: '12-01-2023',desc: 'Compra de Super',total: 2500,categroy: 'Super',type: 'Fijo',obs: ''},
-    {id: 4,date: '12-01-2023',desc: 'Compra de Super',total: 4000,categroy: 'Super',type: 'Fijo',obs: ''},
-    {id: 5,date: '12-01-2023',desc: 'Compra de Super',total: 3890,categroy: 'Super',type: 'Variable',obs: ''},
-    {id: 6,date: '12-01-2023',desc: 'Compra de Super',total: 2250,categroy: 'Super',type: 'Fijo',obs: ''},
-    {id: 7,date: '12-01-2023',desc: 'Compra de Super',total: 750,categroy: 'Super',type: 'Variable',obs: ''},
+    {id: 1,date: '12-01-2023',desc: 'Compra de Super',total: 1200,category: 'Super',type: 'Variable',obs: ''},
+    {id: 2,date: '12-01-2023',desc: 'Compra de Super',total: 1350,category: 'Super',type: 'Variable',obs: ''},
+    {id: 3,date: '12-01-2023',desc: 'Compra de Super',total: 2500,category: 'Super',type: 'Fijo',obs: ''},
+    {id: 4,date: '12-01-2023',desc: 'Compra de Super',total: 4000,category: 'Super',type: 'Fijo',obs: ''},
+    {id: 5,date: '12-01-2023',desc: 'Compra de Super',total: 3890,category: 'Super',type: 'Variable',obs: ''},
+    {id: 6,date: '12-01-2023',desc: 'Compra de Super',total: 2250,category: 'Super',type: 'Fijo',obs: ''},
+    {id: 7,date: '12-01-2023',desc: 'Compra de Super',total: 750,category: 'Super',type: 'Variable',obs: ''},
 ]
 
 export const ExpensesTable = (props:any) => {
@@ -62,7 +63,7 @@ export const ExpensesTable = (props:any) => {
                                     </Grid>
                                     <Grid item xs={12} style={{ height: '500px' }}>
                                         <DataGrid
-                                            rows={rows}
+                                            rows={props.data}
                                             columns={columns}
                                             autoPageSize
                                             pageSizeOptions={[5]}

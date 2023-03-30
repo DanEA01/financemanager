@@ -90,8 +90,8 @@ function App() {
         return { ...oldValues, token: null }
       })
     })
-    setTimeout(verifyUser, 5 * 60 * 1000)
-    // call refreshToken every 5 minutes to renew the authentication token.
+    setTimeout(verifyUser, 30 * 60 * 1000)
+    // call refreshToken every 30 minutes to renew the authentication token.
   }, [setAuthContext])
 
   useEffect(() => {

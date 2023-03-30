@@ -81,7 +81,6 @@ export const getAccounts = async (type:string,token:string) => {
 }
 
 export const insExpense = async (title:string,account:number,date:string,amount:number,category:string,type:string,comments:string,expAuto:boolean,idAccount:string,token:string) => {
-    console.log(expAuto);
     const result = await axios({
         method: 'post',
         withCredentials: true,
@@ -96,6 +95,21 @@ export const insExpense = async (title:string,account:number,date:string,amount:
             comments: comments,
             expAuto: expAuto,
             idAccount: idAccount    
+        },
+        headers:{'Strict-Transport-Security': 'max-age=63072000','Content-Type': 'application/x-www-form-urlencoded','Access-Control-Allow-Credentials': 'true', 'Authorization' : 'Bearer '+token },
+    });
+
+    return result;
+}
+
+export const getExpenses = async (idAccount:string,filter:string,token:string) => {
+    const result = await axios({
+        method: 'get',
+        withCredentials: true,
+        url: process.env.REACT_APP_API_ENDPOINT+ 'Expenses',
+        params: {
+            idAccount: idAccount,
+            filter: filter,
         },
         headers:{'Strict-Transport-Security': 'max-age=63072000','Content-Type': 'application/x-www-form-urlencoded','Access-Control-Allow-Credentials': 'true', 'Authorization' : 'Bearer '+token },
     });

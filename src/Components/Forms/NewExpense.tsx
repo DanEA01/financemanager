@@ -79,7 +79,6 @@ export const NewExpense = (props:any) => {
     
         //function to handle the submit if the validations where successfull  
     const handleInsExp: SubmitHandler<expinput> = (values) => {
-        console.log(props.selectedAcc.cardId);
         insExpense(values.title,values.account,values.date,values.amount,values.category,values.type,values.comments,values.expAuto,props.selectedAcc.cardId,authContext.token).then(response => {
             console.log(response);
         }).catch(error => {

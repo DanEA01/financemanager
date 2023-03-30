@@ -1,4 +1,4 @@
-import { Box, CssBaseline, ThemeProvider } from '@mui/material'
+import { Backdrop, Box, CircularProgress, CssBaseline, ThemeProvider } from '@mui/material'
 import React, { useContext, useEffect, useState } from 'react'
 import { Accounts } from '../Components/Accounts'
 import { Sidebar } from '../Components/Sidebar'
@@ -13,28 +13,40 @@ import { IncomeTabs } from '../Components/IncomeTabs'
 import { ExpensesTable } from '../Components/ExpensesTable'
 //Auth
 import { AuthContext } from '../utils/auth'
-import { getAccounts } from '../api/setApiCalls'
+import { getAccounts, getExpenses } from '../api/setApiCalls'
 
 export const Expenses = (props:any) => {
   const [authContext, setAuthContext] = useContext<any>(AuthContext);
   const [openDialog, setopenDialog] = useState(false);
+  const [openBackdrop, setopenBackdrop] = useState(false);
   const [choosenForm, setChoosenForm] = useState<any>(null);
   const [IncomeTabsIndex, setIncomeTabsIndex] = useState(0);
   const [accounts, setAccounts] = useState(null);
+  const [expenses, setExpenses] = useState('');
   const [selectedCard, setSelectedCard] = useState({
       cardId: '',
       cardNum: 0,
   });
 
   useEffect(() => {
-    getAccounts('Expense',authContext.token).then(response => {
-      setAccounts(response.data.accounts)
-      if(response.data !== ''){
-        setSelectedCard({...selectedCard, cardId: response.data.accounts[0]._id, cardNum:response.data.accounts[0].last4Digits})
-      }
-    }).catch(error => {
-      console.log(error);
-    })
+    if(authContext.token){
+      setopenBackdrop(true);
+      getAccounts('Expense',authContext.token).then(response => {
+        setAccounts(response.data.accounts)
+        if(response.data !== ''){
+          setSelectedCard({...selectedCard, cardId: response.data.accounts[0]._id, cardNum:response.data.accounts[0].last4Digits})
+
+          getExpenses(response.data.accounts[0]._id,'thisMonth',authContext.token).then(response => {
+            setExpenses(response.data.expenses);
+          }).catch(error => {
+            console.log(error);
+          })
+        }
+        setopenBackdrop(false);
+      }).catch(error => {
+        console.log(error);
+      })
+    }
   }, [authContext])
   
 
@@ -58,6 +70,14 @@ export const Expenses = (props:any) => {
 
   const handleSelectedAccountID = (id:string,cardNum:number) => {
     setSelectedCard({...selectedCard, cardId: id, cardNum:cardNum})
+
+    setopenBackdrop(true);
+    getExpenses(id,'thisMonth',authContext.token).then(response => {
+      setExpenses(response.data.expenses);
+      setopenBackdrop(false);
+    }).catch(error => {
+      console.log(error);
+    })
   }
 
   return (
@@ -83,10 +103,16 @@ export const Expenses = (props:any) => {
             {IncomeTabsIndex === 0 ?
               <ExpensesStats />
             : 
-              <ExpensesTable handleAddExpense={addExpenseDialog} />
+              <ExpensesTable handleAddExpense={addExpenseDialog} data={expenses}/>
             }
           </Box>
       </Box>
+      <Backdrop
+            sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+            open={openBackdrop}
+        >
+          <CircularProgress color="primary" />
+      </Backdrop>
       <FMDialog open={openDialog} close={handleClose} form={choosenForm} fullWidth={true} width="md"/>
     </ThemeProvider>
     </>
