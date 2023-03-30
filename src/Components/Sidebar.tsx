@@ -3,6 +3,8 @@ import MuiDrawer from '@mui/material/Drawer';
 import MuiListItem from '@mui/material/ListItem';
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
 import React, { useContext, useEffect, useState } from 'react'
+//Logo
+import {ReactComponent as ReactLogo} from '../assets/img/FM Logo White.svg';
 //icons
 import HomeIcon from '@mui/icons-material/Home';
 import LocalAtmIcon from '@mui/icons-material/LocalAtm';
@@ -13,6 +15,7 @@ import PersonIcon from '@mui/icons-material/Person';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 //Router
 import { useNavigate } from 'react-router-dom';
+import { height } from '@mui/system';
 
 const drawerWidth = 240;
 
@@ -31,7 +34,7 @@ const closedMixin = (theme: Theme): CSSObject => ({
         duration: theme.transitions.duration.leavingScreen,
     }),
     overflowX: 'hidden',
-    backgroundColor: "#1e1e2d",
+    backgroundColor: theme.palette.primary.main,
     zIndex: "1202", 
     width: `calc(${theme.spacing(7)} + 1px)`,
     [theme.breakpoints.up('sm')]: {
@@ -224,11 +227,12 @@ export const Sidebar = (props:any) => {
     </AppBar>
     <Drawer variant="permanent" color="primary" open={open}>
         <DrawerHeader>
-            <img src="/assets/img/FM Logo.svg" width={50}/>
+          <ReactLogo style={{height:'80px'}}/>
         </DrawerHeader>
         <Divider />
         <List className='menu'>
-            <ListItem selected={props.index === 0} onClick={() => handleSelectClick('/Financemanager')} sx={{"&.Mui-selected": {backgroundColor: '#6f6f6f'} ,"&:hover": {backgroundColor: '#4d4d4d'}}}>
+            <ListItem selected={props.index === 0} onClick={() => handleSelectClick('/Financemanager')} sx={{"&.Mui-selected": {backgroundColor: theme.palette.primary.dark} ,"&:hover": {backgroundColor: theme.palette.primary.light
+            }}}>
               <Tooltip title="Home" placement="right">
                 <ListItemButton sx={{
                   minHeight: 48,
@@ -247,7 +251,8 @@ export const Sidebar = (props:any) => {
                 </ListItemButton>
               </Tooltip>
             </ListItem>
-            <ListItem selected={props.index === 1} onClick={() => handleSelectClick('/FinanceManager/Ingresos')} sx={{"&.Mui-selected": {backgroundColor: '#6f6f6f'} ,"&:hover": {backgroundColor: '#4d4d4d'}}}>
+            <ListItem selected={props.index === 1} onClick={() => handleSelectClick('/FinanceManager/Ingresos')} sx={{"&.Mui-selected": {backgroundColor: theme.palette.primary.dark} ,"&:hover": {backgroundColor: theme.palette.primary.light
+            }}}>
               <Tooltip title="Ingresos" placement="right">
                 <ListItemButton sx={{
                   minHeight: 48,
@@ -266,7 +271,8 @@ export const Sidebar = (props:any) => {
                 </ListItemButton>
               </Tooltip>
             </ListItem>
-            <ListItem selected={props.index === 2} onClick={() => handleSelectClick('/FinanceManager/Gastos')} sx={{"&.Mui-selected": {backgroundColor: '#6f6f6f'} ,"&:hover": {backgroundColor: '#4d4d4d'}}}>
+            <ListItem selected={props.index === 2} onClick={() => handleSelectClick('/FinanceManager/Gastos')} sx={{"&.Mui-selected": {backgroundColor: theme.palette.primary.dark} ,"&:hover": {backgroundColor: theme.palette.primary.light
+            }}}>
               <Tooltip title="Gastos" placement="right">
                 <ListItemButton sx={{
                   minHeight: 48,

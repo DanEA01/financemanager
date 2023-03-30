@@ -1,15 +1,42 @@
 import { Box, CssBaseline, ThemeProvider } from '@mui/material'
-import React, { useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Accounts } from '../Components/Accounts'
 import { Sidebar } from '../Components/Sidebar'
 import { ExpensesStats } from '../Components/ExpensesStats'
 import { FMDialog } from '../Components/FMDialog'
+//Forms
 import { NewAccount } from '../Components/Forms/NewAccount'
 import { NewExpense } from '../Components/Forms/NewExpense'
+//Menu
+import { IncomeTabs } from '../Components/IncomeTabs'
+//Table
+import { ExpensesTable } from '../Components/ExpensesTable'
+//Auth
+import { AuthContext } from '../utils/auth'
+import { getAccounts } from '../api/setApiCalls'
 
 export const Expenses = (props:any) => {
+  const [authContext, setAuthContext] = useContext<any>(AuthContext);
   const [openDialog, setopenDialog] = useState(false);
   const [choosenForm, setChoosenForm] = useState<any>(null);
+  const [IncomeTabsIndex, setIncomeTabsIndex] = useState(0);
+  const [accounts, setAccounts] = useState(null);
+  const [selectedCard, setSelectedCard] = useState({
+      cardId: '',
+      cardNum: 0,
+  });
+
+  useEffect(() => {
+    getAccounts('Expense',authContext.token).then(response => {
+      setAccounts(response.data.accounts)
+      if(response.data !== ''){
+        setSelectedCard({...selectedCard, cardId: response.data.accounts[0]._id, cardNum:response.data.accounts[0].last4Digits})
+      }
+    }).catch(error => {
+      console.log(error);
+    })
+  }, [authContext])
+  
 
   const addAccountDialog = () => {
     setChoosenForm(<NewAccount />);
@@ -21,8 +48,16 @@ export const Expenses = (props:any) => {
   };
 
   const addExpenseDialog = () => {
-    setChoosenForm(<NewExpense />);
+    setChoosenForm(<NewExpense selectedAcc={selectedCard}/>);
     setopenDialog(true);
+  }
+
+  const SetIndexChange = (index:number) => {
+    setIncomeTabsIndex(index);
+  }
+
+  const handleSelectedAccountID = (id:string,cardNum:number) => {
+    setSelectedCard({...selectedCard, cardId: id, cardNum:cardNum})
   }
 
   return (
@@ -43,8 +78,13 @@ export const Expenses = (props:any) => {
             transition: 'margin 225ms cubic-bezier(0, 0, 0.2, 1) 0ms',
             marginLeft: '0px',
             overflowX: 'hidden'}}>
-            <Accounts handleAddAccount={addAccountDialog}/>
-            <ExpensesStats handleAddExpense={addExpenseDialog}/>
+            <IncomeTabs tabIndex={IncomeTabsIndex} handleIndexChange={SetIndexChange}/>
+            <Accounts handleAddAccount={addAccountDialog} cards={accounts} selectedAccountID={handleSelectedAccountID}/>
+            {IncomeTabsIndex === 0 ?
+              <ExpensesStats />
+            : 
+              <ExpensesTable handleAddExpense={addExpenseDialog} />
+            }
           </Box>
       </Box>
       <FMDialog open={openDialog} close={handleClose} form={choosenForm} fullWidth={true} width="md"/>

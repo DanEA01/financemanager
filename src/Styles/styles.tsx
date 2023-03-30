@@ -1,8 +1,9 @@
-import { makeStyles } from "@mui/material";
+import { Theme } from "@mui/material";
+import { makeStyles } from "@mui/styles";
 
-export const useStyles = makeStyles((theme:any) => ({
+export const useTabs = makeStyles((theme:any) => ({
   root: {
-    backgroundColor: '#eee',
+    backgroundColor: '#fff',
     borderRadius: 10,
     minHeight: 44
   },
@@ -26,8 +27,27 @@ export const useStyles = makeStyles((theme:any) => ({
       right: 4,
       bottom: 0,
       borderRadius: 8,
-      backgroundColor: '#fff',
+      backgroundColor: theme.palette.primary.main,
       boxShadow: '0 4px 12px 0 rgba(0,0,0,0.16)',
     }
+  }
+}));
+
+export const useTabItem = makeStyles((theme:any) => ({
+  root: {
+    '&:hover': {
+      opacity: 1
+    },
+    minHeight: 44,
+    minWidth: 96,
+  },
+  selected:{
+    color: theme.palette.primary.contrastText+' !important',
+  },
+  wrapper: {
+    // zIndex: 2,
+    // marginTop: spacing(0.5),
+    color: "white",
+    textTransform: 'initial'
   }
 }));

@@ -1,5 +1,5 @@
 import { Avatar, Box, Grid, IconButton, Stack, styled, Tooltip, Typography } from '@mui/material'
-import React from 'react'
+import React, { useState } from 'react'
 import { CreditCard } from '../singleComponents/CreditCard'
 //icons
 import AddIcon from '@mui/icons-material/Add';
@@ -9,32 +9,25 @@ const PageTitle = styled('div')(({ theme }) => ({
     padding: '30px',
 }))
 
-const cards = [
-    {
-        cardNumber:"4587",
-        cardName:"Daniel Enriquez A.",
-        cardType:"visa",
-        cardDefault:true,
-    },
-    {
-        cardNumber:"3087",
-        cardName:"Daniel Enriquez A.",
-        cardType:"mastercard",
-        cardDefault:false,
-    }
-  ]
-
 export const Accounts = (props:any) => {
+    const [selectedIndex, setSelectedIndex] = useState(0)
+
+    const handleIndexClick = (index:number,id:string,cardNum:number) =>{
+        props.selectedAccountID(id,cardNum);
+        setSelectedIndex(index);
+    }
+
   return (
     <>  
         <Grid container spacing={3}>
             <Grid item direction="row" xs={12}>
                 <Grid container spacing={3} alignItems="center" wrap="nowrap" sx={{ overflow: 'auto'}}>
-                    {cards.map(card => (
+                    {props.cards !== null ?
+                    props.cards.map((card:any,index:number) => (
                         <Grid item>
-                            <CreditCard cardNumber={card.cardNumber} cardName={card.cardName} cardType={card.cardType} cardDefault={card.cardDefault}/>
+                            <CreditCard cardId={card._id} cardNumber={card.last4Digits} cardName={card.alias} cardType={card.cardBrand} indexClick={handleIndexClick} index={index} isSelected={index === selectedIndex}/>
                         </Grid>
-                    ))}
+                    )):null}
                     <Grid item>
                         <Tooltip title="Agregar Cuenta" placement="bottom" onClick={props.handleAddAccount}>
                             <IconButton aria-label="agregar cuenta">

@@ -11,6 +11,7 @@ import SavingsOutlinedIcon from '@mui/icons-material/SavingsOutlined';
 
 export const NewIncome = () => {
     const theme = useTheme();
+    
     const [expType, setexpType] = useState<any>('Variable');
 
     const Tags = ['Nomina','Bono','Fondo Ahorro','Comisión','Otros'];

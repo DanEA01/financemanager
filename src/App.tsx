@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useContext, useEffect } from 'react';
 import logo from './logo.svg';
 import { createTheme, useTheme } from '@mui/material';
 //routes
@@ -7,16 +7,27 @@ import { Route, Routes } from 'react-router-dom';
 import { Home } from './Pages/Home';
 import { Expenses } from './Pages/Expenses';
 import { Income } from './Pages/Income';
+import { Login } from './Pages/Login';
+import { Register } from './Pages/Register';
+//API calls
+import { setVerify } from './api/setApiCalls';
+//Auth
+import { AuthContext } from './utils/auth';
+import { RequireAuth } from './utils/RequireAuth';
 
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#7986cb',
-      dark: '#1e1e2d'
+      main: '#02897b',
+      dark: '#025950',
+      light: '#b7deda',
+      contrastText: '#ffff',
     },
     secondary: {
-      main: '#ff8a65',
-      contrastText: 'rgba(255,255,255,0.87)',
+      main: '#757575',
+      dark: '#525151',
+      light: '#adabab',
+      contrastText: '#ffff',
     },
     divider: 'rgba(129,129,129,0.4)',
   },
@@ -66,13 +77,35 @@ const theme = createTheme({
 })
 
 function App() {
-  const theme = useTheme();
+  const [authContext, setAuthContext] = useContext<any>(AuthContext);
+
+  const verifyUser = useCallback(() => {
+    setVerify().then(response => {
+      setAuthContext((oldValues: any) => {
+        return { ...oldValues, token: response.data.token, username: response.data.name, email: response.data.email}
+      })
+    }).catch(error => {
+      console.log(error);
+      setAuthContext((oldValues: any) => {
+        return { ...oldValues, token: null }
+      })
+    })
+    setTimeout(verifyUser, 5 * 60 * 1000)
+    // call refreshToken every 5 minutes to renew the authentication token.
+  }, [setAuthContext])
+
+  useEffect(() => {
+    verifyUser()
+  }, [verifyUser])
+  
   return (
     <Routes>
+      <Route path='/Login' element={<Login />}/>
+      <Route path='/Registro' element={<Register />}/>
       <Route path='/Financemanager'>
-        <Route index element={<Home index="0" theme={theme}/>}/>
-        <Route path='Ingresos' element={<Income theme={theme}/>}/>
-        <Route path='Gastos' element={<Expenses theme={theme}/>}/>
+        <Route index element={<RequireAuth><Home index="0" theme={theme}/></RequireAuth>}/>
+        <Route path='Ingresos' element={<RequireAuth><Income theme={theme}/></RequireAuth>}/>
+        <Route path='Gastos' element={<RequireAuth><Expenses theme={theme}/></RequireAuth>}/>
       </Route>
     </Routes>
   );

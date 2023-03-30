@@ -1,16 +1,35 @@
 import { Box, CssBaseline, ThemeProvider } from '@mui/material'
-import React, { useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Accounts } from '../Components/Accounts'
 import { FMDialog } from '../Components/FMDialog'
+//Forms
 import { NewAccount } from '../Components/Forms/NewAccount'
 import { NewIncome } from '../Components/Forms/NewIncome'
+//Graphs
 import { IncomeStats } from '../Components/IncomeStats'
+//Table
+import { IncomeTable } from '../Components/IncomeTable'
+//Tabs & Bar
 import { IncomeTabs } from '../Components/IncomeTabs'
 import { Sidebar } from '../Components/Sidebar'
+//Auth
+import { AuthContext } from '../utils/auth'
+import { getAccounts } from '../api/setApiCalls'
 
 export const Income = (props:any) => {
+  const [authContext, setAuthContext] = useContext<any>(AuthContext);
   const [openDialog, setopenDialog] = useState(false);
   const [choosenForm, setChoosenForm] = useState<any>(null);
+  const [IncomeTabsIndex, setIncomeTabsIndex] = useState(0);
+  const [accounts, setAccounts] = useState(null);
+
+  useEffect(() => {
+    getAccounts('Income',authContext.token).then(response => {
+      setAccounts(response.data.accounts)
+    }).catch(error => {
+      console.log(error);
+    })
+  }, [authContext])
 
   const addAccountDialog = () => {
     setChoosenForm(<NewAccount />);
@@ -24,6 +43,10 @@ export const Income = (props:any) => {
   const addIncomeDialog = () => {
     setChoosenForm(<NewIncome />);
     setopenDialog(true);
+  }
+
+  const SetIndexChange = (index:number) => {
+    setIncomeTabsIndex(index);
   }
 
     return (
@@ -44,9 +67,13 @@ export const Income = (props:any) => {
                 transition: 'margin 225ms cubic-bezier(0, 0, 0.2, 1) 0ms',
                 marginLeft: '0px',
                 overflowX: 'hidden'}}>
-                <IncomeTabs />
-                <Accounts handleAddAccount={addAccountDialog}/>
-                <IncomeStats  handleAddIncome={addIncomeDialog}/>
+                <IncomeTabs tabIndex={IncomeTabsIndex} handleIndexChange={SetIndexChange}/>
+                <Accounts handleAddAccount={addAccountDialog} cards={accounts}/>
+                {IncomeTabsIndex === 0 ?
+                  <IncomeStats  />
+                : 
+                  <IncomeTable handleAddIncome={addIncomeDialog} />
+                }
               </Box>
           </Box>
           <FMDialog open={openDialog} close={handleClose} form={choosenForm} fullWidth={true} width="md"/>
