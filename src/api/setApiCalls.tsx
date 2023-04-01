@@ -116,3 +116,18 @@ export const getExpenses = async (idAccount:string,filter:string,token:string) =
 
     return result;
 }
+
+export const getExpensesStats = async (idAccount:string,filter:string,token:string) => {
+    const result = await axios({
+        method: 'get',
+        withCredentials: true,
+        url: process.env.REACT_APP_API_ENDPOINT+ 'expensesStats',
+        params: {
+            idAccount: idAccount,
+            filter: filter,
+        },
+        headers:{'Strict-Transport-Security': 'max-age=63072000','Content-Type': 'application/x-www-form-urlencoded','Access-Control-Allow-Credentials': 'true', 'Authorization' : 'Bearer '+token },
+    });
+
+    return result;
+}

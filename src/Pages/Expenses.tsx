@@ -13,7 +13,7 @@ import { IncomeTabs } from '../Components/IncomeTabs'
 import { ExpensesTable } from '../Components/ExpensesTable'
 //Auth
 import { AuthContext } from '../utils/auth'
-import { getAccounts, getExpenses } from '../api/setApiCalls'
+import { getAccounts, getExpenses, getExpensesStats } from '../api/setApiCalls'
 
 export const Expenses = (props:any) => {
   const [authContext, setAuthContext] = useContext<any>(AuthContext);
@@ -23,6 +23,7 @@ export const Expenses = (props:any) => {
   const [IncomeTabsIndex, setIncomeTabsIndex] = useState(0);
   const [accounts, setAccounts] = useState(null);
   const [expenses, setExpenses] = useState('');
+  const [expensesStats, setExpensesStats] = useState(null);
   const [selectedCard, setSelectedCard] = useState({
       cardId: '',
       cardNum: 0,
@@ -38,6 +39,12 @@ export const Expenses = (props:any) => {
 
           getExpenses(response.data.accounts[0]._id,'thisMonth',authContext.token).then(response => {
             setExpenses(response.data.expenses);
+          }).catch(error => {
+            console.log(error);
+          })
+
+          getExpensesStats(response.data.accounts[0]._id,'thisMonth',authContext.token).then(response => {
+            setExpensesStats(response.data.expenses);
           }).catch(error => {
             console.log(error);
           })
@@ -74,6 +81,12 @@ export const Expenses = (props:any) => {
     setopenBackdrop(true);
     getExpenses(id,'thisMonth',authContext.token).then(response => {
       setExpenses(response.data.expenses);
+    }).catch(error => {
+      console.log(error);
+    })
+
+    getExpensesStats(id,'thisMonth',authContext.token).then(response => {
+      setExpensesStats(response.data.expenses);
       setopenBackdrop(false);
     }).catch(error => {
       console.log(error);
@@ -101,7 +114,7 @@ export const Expenses = (props:any) => {
             <IncomeTabs tabIndex={IncomeTabsIndex} handleIndexChange={SetIndexChange}/>
             <Accounts handleAddAccount={addAccountDialog} cards={accounts} selectedAccountID={handleSelectedAccountID}/>
             {IncomeTabsIndex === 0 ?
-              <ExpensesStats />
+              <ExpensesStats data={expensesStats}/>
             : 
               <ExpensesTable handleAddExpense={addExpenseDialog} data={expenses}/>
             }

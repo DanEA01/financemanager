@@ -1,7 +1,9 @@
 import { Avatar, Box, Card, CardContent, Grid, List, ListItem, ListItemAvatar, ListItemText, Stack, Typography } from '@mui/material'
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 //Charts
 import Chart from "react-apexcharts";
+import { ApexOptions } from "apexcharts";
+import ReactApexChart from "react-apexcharts";
 //Icons
 import StarBorderIcon from '@mui/icons-material/StarBorder';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
@@ -12,23 +14,22 @@ import ProductionQuantityLimitsIcon from '@mui/icons-material/ProductionQuantity
 import LocalOfferOutlinedIcon from '@mui/icons-material/LocalOfferOutlined';
 
 
-export const ExpensesStats = () => {
+export const ExpensesStats = (props:any) => {
+    const [statsData, setStatsData] = useState<any>('');
+    const [chartsSet, setChartsSet] = useState({
+        balance: [0],
+    });
 
     const [graphs, setgraphs] = useState<any>({
         balance:{
             options:{
-                radialBar: {
-                    hollow: {
-                      size: '70%',
-                    }
-                },
                 plotOptions: {
                     radialBar: {
                         dataLabels: {
                             value: {
-                            formatter: function (val:any) {
-                                return "$ 9,460.00";
-                            }
+                                formatter: function (val:any) {
+                                    return "$ "+2500;
+                                }
                             }
                         }
                     }
@@ -36,7 +37,7 @@ export const ExpensesStats = () => {
                 labels: ['Saldo'],
                 colors: ['#A5D6A7']
             },
-            series:[70],
+            series:[],
         },
         yearExpenses: {
             options: {
@@ -221,10 +222,48 @@ export const ExpensesStats = () => {
             ]
         },
     })
+    
+    useEffect(() => {
+      if(props.data !== null){
+        setStatsData(props.data)
+      }
+    }, [props.data])
 
+    useEffect(() => {
+        if(statsData !== ''){
+            console.log(statsData);
+            console.log(Object.keys(statsData.expensesStatsByMonth));
+            console.log(Object.values(statsData.expensesStatsByMonth));
+            
+            setChartsSet({...chartsSet ,balance: [statsData.balacePerc]});
+        }
+    }, [statsData])
+    
+    const numberToCurrency = (num:any) => {
+        const formatter = new Intl.NumberFormat('es-MX');
+        return '$ '+formatter.format(num);
+    }
+    
     const generateRandomColor = () => {
         return '#'+Math.floor(Math.random()*16777215).toString(16)
     }
+
+    const balanceChart: any = {
+        plotOptions: {
+            radialBar: {
+                dataLabels: {
+                    value: {
+                        formatter: function (val:any) {
+                            return val+ "%";
+                        }
+                    }
+                }
+            }
+        },
+        labels: [numberToCurrency(statsData.balance)],
+        colors: ['#A5D6A7'],
+    }
+    
 
   return (
     <Grid container spacing={3} sx={{marginY: '20px'}}>
@@ -251,7 +290,7 @@ export const ExpensesStats = () => {
                                             </Grid>
                                             <Grid item xs={12}>
                                                 <Stack direction="row" spacing={1} alignItems="center" alignContent="center">
-                                                    <Typography color="white" className='card-amount'>$25,000</Typography>
+                                                    <Typography color="white" className='card-amount'>{numberToCurrency(statsData.totalExpense)}</Typography>
                                                     <Avatar sx={{backgroundColor:'#f7b6b5', width: 24, height: 24 }}>
                                                         <TrendingDownIcon sx={{fontSize: '1.1rem', color:'#E53935'}}/>
                                                     </Avatar>
@@ -281,7 +320,7 @@ export const ExpensesStats = () => {
                                             </Grid>
                                             <Grid item xs={12}>
                                             <Stack direction="row" spacing={1} alignItems="center" alignContent="center">
-                                                <Typography color="white" className='card-amount'>$15,000</Typography>
+                                                <Typography color="white" className='card-amount'>{numberToCurrency(statsData.limit)}</Typography>
                                                 <Avatar sx={{backgroundColor:'#D1C4E9', width: 24, height: 24 }}>
                                                     <TrendingDownIcon sx={{fontSize: '1.1rem', color:'#7B1FA2'}}/>
                                                 </Avatar>
@@ -311,8 +350,8 @@ export const ExpensesStats = () => {
                                     </Grid>
                                     <Grid item xs={12}>
                                     <Chart
-                                        options={graphs.balance.options}
-                                        series={graphs.balance.series}
+                                        options={balanceChart}
+                                        series={chartsSet.balance}
                                         type="radialBar"
                                         height={300}
                                     />
@@ -345,7 +384,7 @@ export const ExpensesStats = () => {
                                                     <StarBorderIcon/>
                                                 </Avatar>
                                                 </ListItemAvatar>
-                                                <ListItemText primary="Fecha de Corte" secondary="22 de Mes"/>
+                                                <ListItemText primary="Fecha de Corte" secondary={statsData.cutDate+" de Mes"}/>
                                             </ListItem>
                                             <ListItem className='expenses-li' sx={{backgroundColor: '#E1BEE7'}}>
                                                 <ListItemAvatar>
@@ -353,7 +392,7 @@ export const ExpensesStats = () => {
                                                     <StarBorderIcon/>
                                                 </Avatar>
                                                 </ListItemAvatar>
-                                                <ListItemText primary="Fecha de Pago" secondary="30 de Mes"/>
+                                                <ListItemText primary="Fecha de Pago" secondary={statsData.payDate+" de Mes"}/>
                                             </ListItem>
                                             <ListItem className='expenses-li' sx={{backgroundColor: '#B2DFDB'}}>
                                                 <ListItemAvatar>
@@ -361,7 +400,7 @@ export const ExpensesStats = () => {
                                                     <StarBorderIcon/>
                                                 </Avatar>
                                                 </ListItemAvatar>
-                                                <ListItemText primary="Límite de gasto" secondary="$ 9,500.00"/>
+                                                <ListItemText primary="Límite de gasto" secondary={numberToCurrency(statsData.limit)}/>
                                             </ListItem>
                                         </List>
                                     </Grid>
@@ -437,46 +476,19 @@ export const ExpensesStats = () => {
                                     </Grid>
                                     <Grid item xs={12}>
                                     <List sx={{ width: '100%'}}>
+                                    {statsData.expensesStatsByMonth !== undefined ?
+                                    Object.keys(statsData.expensesStatsByMonth).map((key, index) => {
+                                        return (
                                         <ListItem className='expenses-li' sx={{backgroundColor: 'white'}}>
                                             <ListItemAvatar>
                                             <Avatar sx={{backgroundColor: generateRandomColor()}}>
                                                 <LocalOfferOutlinedIcon />
                                             </Avatar>
                                             </ListItemAvatar>
-                                            <ListItemText primary="Super" secondary="$5,500"/>
+                                            <ListItemText primary={key} secondary={numberToCurrency(statsData.expensesStatsByMonth[key])}/>
                                         </ListItem>
-                                        <ListItem className='expenses-li' sx={{backgroundColor: 'white'}}>
-                                            <ListItemAvatar>
-                                            <Avatar sx={{backgroundColor: generateRandomColor()}}>
-                                                <LocalOfferOutlinedIcon />
-                                            </Avatar>
-                                            </ListItemAvatar>
-                                            <ListItemText primary="Compras" secondary="$4,300" />
-                                        </ListItem>
-                                        <ListItem className='expenses-li' sx={{backgroundColor: 'white'}}>
-                                            <ListItemAvatar>
-                                            <Avatar sx={{backgroundColor: generateRandomColor()}}>
-                                                <LocalOfferOutlinedIcon />
-                                            </Avatar>
-                                            </ListItemAvatar>
-                                            <ListItemText primary="Casa" secondary="$2,000" />
-                                        </ListItem>
-                                        <ListItem className='expenses-li' sx={{backgroundColor: 'white'}}>
-                                            <ListItemAvatar>
-                                            <Avatar sx={{backgroundColor: generateRandomColor()}}>
-                                                <LocalOfferOutlinedIcon />
-                                            </Avatar>
-                                            </ListItemAvatar>
-                                            <ListItemText primary="Comida" secondary="$1,950" />
-                                        </ListItem>
-                                        <ListItem className='expenses-li' sx={{backgroundColor: 'white'}}>
-                                            <ListItemAvatar>
-                                            <Avatar sx={{backgroundColor: generateRandomColor()}}>
-                                                <LocalOfferOutlinedIcon />
-                                            </Avatar>
-                                            </ListItemAvatar>
-                                            <ListItemText primary="Otros" secondary="$1,500" />
-                                        </ListItem>
+                                        );
+                                    }) :null}
                                     </List>
                                     </Grid>
                                 </Grid>
