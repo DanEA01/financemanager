@@ -33,12 +33,6 @@ const columns: GridColDef[] = [
 
 const rows: GridRowsProp = [
     {id: 1,date: '12-01-2023',desc: 'Compra de Super',total: 1200,category: 'Super',type: 'Variable',obs: ''},
-    {id: 2,date: '12-01-2023',desc: 'Compra de Super',total: 1350,category: 'Super',type: 'Variable',obs: ''},
-    {id: 3,date: '12-01-2023',desc: 'Compra de Super',total: 2500,category: 'Super',type: 'Fijo',obs: ''},
-    {id: 4,date: '12-01-2023',desc: 'Compra de Super',total: 4000,category: 'Super',type: 'Fijo',obs: ''},
-    {id: 5,date: '12-01-2023',desc: 'Compra de Super',total: 3890,category: 'Super',type: 'Variable',obs: ''},
-    {id: 6,date: '12-01-2023',desc: 'Compra de Super',total: 2250,category: 'Super',type: 'Fijo',obs: ''},
-    {id: 7,date: '12-01-2023',desc: 'Compra de Super',total: 750,category: 'Super',type: 'Variable',obs: ''},
 ]
 
 export const ExpensesTable = (props:any) => {

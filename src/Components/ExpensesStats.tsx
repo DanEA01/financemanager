@@ -16,213 +16,59 @@ import LocalOfferOutlinedIcon from '@mui/icons-material/LocalOfferOutlined';
 
 export const ExpensesStats = (props:any) => {
     const [statsData, setStatsData] = useState<any>('');
-    const [chartsSet, setChartsSet] = useState({
+    const [chartsSet, setChartsSet] = useState<any>({
         balance: [0],
-    });
-
-    const [graphs, setgraphs] = useState<any>({
-        balance:{
-            options:{
-                plotOptions: {
-                    radialBar: {
-                        dataLabels: {
-                            value: {
-                                formatter: function (val:any) {
-                                    return "$ "+2500;
-                                }
-                            }
-                        }
-                    }
-                },
-                labels: ['Saldo'],
-                colors: ['#A5D6A7']
-            },
-            series:[],
-        },
         yearExpenses: {
-            options: {
-                chart: {
-                  type: 'area'
-                },
-                dataLabels: {
-                  enabled: false
-                },
-                stroke: {
-                  curve: 'smooth'
-                },
-                grid: {
-                  show: false,
-                },
-                colors: ['#90CAF9', '#E1BEE7'],
-                xaxis: {
-                    show: false,
-                    categories: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio"],
-                    labels: {
-                      show: false
-                    },
-                    axisBorder: {
-                      show: false
-                    },
-                    axisTicks: {
-                      show: false
-                    },
-                },
-                yaxis: {
-                    show: false,
-                    labels: {
-                      show: false
-                    },
-                    axisBorder: {
-                      show: false
-                    },
-                    axisTicks: {
-                      show: false
-                    }
-                },
-            },
-            series: [
+            series:[
                 {
                     name: "Gastos",
-                    data: [15000, 17000, 20000, 14000, 13500, 9800, 16540]
+                    data: [0]
                 },
                 {
                     name: "Limite Gastos",
-                    data: [14000, 14000, 14000, 14000, 14000, 14000, 14000]
-                }
+                    data: [0]
+                },
             ],
+            labels: [''],
+            expenseSum: 0,
+            limitSum: 0,
+            //variable to show or hide chart if it has no data
+            show:false
         },
-        typeofExpense: {
-            options: {
-                chart: {
-                    stacked: true,
-                    toolbar: {
-                      show: true
-                    },
-                    zoom: {
-                      enabled: true
-                    }
-                },
-                responsive: [{
-                    breakpoint: 480,
-                    options: {
-                      legend: {
-                        position: 'bottom',
-                        offsetX: -10,
-                        offsetY: 0
-                      }
-                    }
-                  }],
-                  plotOptions: {
-                    bar: {
-                      horizontal: false,
-                      borderRadius: 10,
-                      dataLabels: {
-                        total: {
-                          enabled: true,
-                          style: {
-                            fontSize: '13px',
-                            fontWeight: 900
-                          }
-                        }
-                      }
-                    },
-                  },
-                  grid: {
-                    show: false,
-                  },
-                  xaxis: {
-                    show: false,
-                    categories: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio"],
-                    labels: {
-                      show: false
-                    },
-                    axisBorder: {
-                      show: false
-                    },
-                    axisTicks: {
-                      show: false
-                    },
-                  },
-                  yaxis: {
-                        show: false,
-                        labels: {
-                        show: false
-                        },
-                        axisBorder: {
-                        show: false
-                        },
-                        axisTicks: {
-                        show: false
-                        }
-                  },
-                  colors: ['#8D6E63', '#26A69A'],
-            },
-            series: [
-              {
-                name: 'Gastos Fijos',
-                data: [2300, 2400, 2100, 3200, 1200, 3000]
-              }, {
-                name: 'Gastos Variables',
-                data: [8500, 8000, 7700, 5850, 9580, 1000]
-              }
-            ]
-              
-        },
-        expensesMap: {
-            options: {
-                legend: {
-                  show: true
-                },
-                plotOptions: {
-                    treemap: {
-                      distributed: false,
-                      enableShades: false
-                    }
-                },
-                colors: ['#8D6E63', '#26A69A'],
-            },
-            series: [
+        yearExpensesType: {
+            series:[
                 {
-                  name: 'Gastos Fijos',  
-                  data: [
-                    {
-                      x: 'Comida',
-                      y: 3520
-                    },
-                    {
-                      x: 'Super',
-                      y: 4500
-                    },
-                    {
-                      x: 'Mantenimiento',
-                      y: 1200
-                    },
-                    {
-                       x: 'Total Play',
-                       y: 700
-                    }
-                  ]
+                    name: "Gastos Fijos",
+                    data: [0]
                 },
                 {
-                  name: 'Gastos Variables',  
-                  data: [
-                    {
-                      x: 'Ropa',
-                      y: 1200
-                    },
-                    {
-                      x: 'Casa',
-                      y: 1000
-                    },
-                    {
-                      x: 'Otros',
-                      y: 836
-                    }]
-                }
-            ]
+                    name: "Gastos Variables",
+                    data: [0]
+                },
+            ],
+            labels: [''],
+            expenseFijoSum: 0,
+            expenseVariableSum: 0,
+            //variable to show or hide chart if it has no data
+            show:false
         },
-    })
-    
+        yearExpensesMap: {
+            series:[
+                {
+                    name: "Gastos Fijos",
+                    data: [{x:'', y:0}]
+                },
+                {
+                    name: "Gastos Variables",
+                    data: [{x:'', y:0}]
+                },
+            ],
+            //variable to show or hide chart if it has no data
+            show:false
+        }
+    });
+    const months = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre']    
+
     useEffect(() => {
       if(props.data !== null){
         setStatsData(props.data)
@@ -231,11 +77,10 @@ export const ExpensesStats = (props:any) => {
 
     useEffect(() => {
         if(statsData !== ''){
-            console.log(statsData);
-            console.log(Object.keys(statsData.expensesStatsByMonth));
-            console.log(Object.values(statsData.expensesStatsByMonth));
-            
             setChartsSet({...chartsSet ,balance: [statsData.balacePerc]});
+            setYearExpStats(statsData.expensesStatsByYear.expensesByMonth,statsData.limit);
+            setYearExpStatsType(statsData.expensesStatsByYear.expensesByType);
+            setYearExpStatsMap(statsData.expensesStatsByYear.expensesByTypenTag);
         }
     }, [statsData])
     
@@ -246,6 +91,134 @@ export const ExpensesStats = (props:any) => {
     
     const generateRandomColor = () => {
         return '#'+Math.floor(Math.random()*16777215).toString(16)
+    }
+
+    const setYearExpStats = (data:any, limit:number) => {
+        let labels:any = [];
+        let limits:any = [];
+        let expenseSum = 0;
+        let limitSum = 0;
+        const expenses = data !== undefined ? Object.values(data) : [];
+        if(data !== undefined){
+            //get the sum of expenses and limit for the yearly data
+            Object.keys(data).map((key:any) => {
+                expenseSum += data[key];
+                // /12 to take down the limit to each month
+                limitSum += (limit/12);
+                labels.push(months[key]);
+                limits.push(limit/12);
+            })
+        }
+        setChartsSet((prevChartSet:any) => ({
+            ...prevChartSet,
+            yearExpenses: {
+                ...prevChartSet.yearExpenses,
+                series:[
+                    {
+                        name: "Gastos",
+                        data: expenses
+                    },
+                    {
+                        name: "Limite Gastos",
+                        data: limits
+                    },
+                ],
+                labels:labels,
+                expenseSum:expenseSum,
+                limitSum:limitSum,
+                show: data !== undefined ? true : false,
+            }
+        }));
+    }
+
+    const setYearExpStatsType = (data:any) => {
+        let labels:any = [];
+        let labels2:any = [];
+        let expenseFijoSum = 0;
+        let expenseVariableSum = 0;
+        const expensesFijo:any = [];
+        const expensesVariable:any = [];
+
+        if(data !== undefined){
+            let lastKey:any = Object.keys(data.Fijo).pop();
+            let firstKey:any = Object.keys(data.Fijo)[0] <= Object.keys(data.Variable)[0] ? Object.keys(data.Fijo)[0] : Object.keys(data.Variable)[0]
+            for(let i=firstKey;i<=lastKey;i++){
+                data.Fijo[i] !== undefined  ? expenseFijoSum += data.Fijo[i] : expenseFijoSum += 0;
+                data.Fijo[i] !== undefined  ? expensesFijo.push(data.Fijo[i]) : expensesFijo.push(0);
+            }
+            //get the sum of expenses Fijo and the month labels
+            Object.keys(data.Fijo).map((key:any) => {
+                labels.push(months[key]);
+            })
+            lastKey = Object.keys(data.Variable).pop();
+            for(let i=firstKey;i<=lastKey;i++){
+                data.Variable[i] !== undefined  ? expenseVariableSum += data.Variable[i] : expenseVariableSum += 0;
+                data.Variable[i] !== undefined  ? expensesVariable.push(data.Variable[i]) : expensesVariable.push(0);
+            }
+            //get the sum of expenses Variable and the month labels
+            Object.keys(data.Variable).map((key:any) => {
+                labels2.push(months[key]);
+            })
+            /* //Combine the 2 labels and remove duplicates
+            this will create an array of the months the expenses took place */
+            labels = labels.concat(labels2.filter((item:any) => labels.indexOf(item) < 0));
+        }
+        
+        setChartsSet((prevChartSet:any) => ({
+            ...prevChartSet,
+            yearExpensesType: {
+                ...prevChartSet.yearExpensesType,
+                series:[
+                    {
+                        name: "Gastos Fijos",
+                        data: expensesFijo
+                    },
+                    {
+                        name: "Gastos Variables",
+                        data: expensesVariable
+                    },
+                ],
+                labels:labels,
+                expenseFijoSum:expenseFijoSum,
+                expenseVariableSum:expenseVariableSum,
+                show: data !== undefined ? true : false,
+            }
+        }));
+        
+    }
+
+    const setYearExpStatsMap = (data:any) => {
+        const expensesFijo:any = [];
+        const expensesVariable:any = [];
+
+        if(data !== undefined){
+            Object.keys(data.Fijo).map((key:any) => {
+                expensesFijo.push({x:key,y:data.Fijo[key]})
+            })
+
+            Object.keys(data.Variable).map((key:any) => {
+                expensesVariable.push({x:key,y:data.Variable[key]})
+            })
+        }
+
+        setChartsSet((prevChartSet:any) => ({
+            ...prevChartSet,
+            yearExpensesMap: {
+                ...prevChartSet.yearExpensesMap,
+                series:[
+                    {
+                        name: "Gastos Fijos",
+                        data: expensesFijo
+                    },
+                    {
+                        name: "Gastos Variables",
+                        data: expensesVariable
+                    },
+                ],
+                show: data !== undefined ? true : false,
+            }
+        }));
+        
     }
 
     const balanceChart: any = {
@@ -262,6 +235,126 @@ export const ExpensesStats = (props:any) => {
         },
         labels: [numberToCurrency(statsData.balance)],
         colors: ['#A5D6A7'],
+    }
+
+    const yearExpensesChart: any = {
+    chart: {
+        type: 'area'
+        },
+        dataLabels: {
+            enabled: false
+        },
+        stroke: {
+            curve: 'smooth'
+        },
+        grid: {
+            show: false,
+        },
+        colors: ['#90CAF9', '#E1BEE7'],
+        xaxis: {
+            show: false,
+            categories: chartsSet.yearExpenses.labels,
+            labels: {
+            show: false
+            },
+            axisBorder: {
+            show: false
+            },
+            axisTicks: {
+            show: false
+            },
+        },
+        yaxis: {
+            show: false,
+            labels: {
+            show: false
+            },
+            axisBorder: {
+            show: false
+            },
+            axisTicks: {
+            show: false
+            }
+        },
+    }
+
+    const yearExpensesType = {
+        chart: {
+            stacked: true,
+            toolbar: {
+              show: true
+            },
+            zoom: {
+              enabled: true
+            }
+        },
+        responsive: [{
+        breakpoint: 480,
+        options: {
+            legend: {
+                position: 'bottom',
+                offsetX: -10,
+                offsetY: 0
+            }
+        }
+        }],
+        plotOptions: {
+        bar: {
+            horizontal: false,
+            borderRadius: 10,
+            dataLabels: {
+            total: {
+                enabled: true,
+                style: {
+                fontSize: '13px',
+                fontWeight: 900
+                }
+            }
+            }
+        },
+        },
+        grid: {
+            show: false,
+        },
+        xaxis: {
+            show: false,
+            categories: chartsSet.yearExpensesType.labels,
+            labels: {
+                show: false
+            },
+            axisBorder: {
+                show: false
+            },
+            axisTicks: {
+                show: false
+            },
+        },
+        yaxis: {
+            show: false,
+            labels: {
+            show: false
+            },
+            axisBorder: {
+            show: false
+            },
+            axisTicks: {
+            show: false
+            }
+        },
+        colors: ['#8D6E63', '#26A69A'],
+    }
+
+    const yearExpenseMap = {
+        legend: {
+            show: true
+        },
+        plotOptions: {
+            treemap: {
+            distributed: false,
+            enableShades: false
+            }
+        },
+        colors: ['#8D6E63', '#26A69A'],
     }
     
 
@@ -409,6 +502,8 @@ export const ExpensesStats = (props:any) => {
                         </Box>
                     </Card>
                 </Grid>
+                { props.filter === 'thisYear' || props.filter === 'lastYear' ?
+                chartsSet.yearExpenses.show === true ? 
                 <Grid item xs={12} sm={12} md={12} lg={8}>
                     <Card className='card'>
                         <Box padding="18px">
@@ -417,7 +512,7 @@ export const ExpensesStats = (props:any) => {
                                     <Grid item xs={12}>
                                         <Grid container alignItems="center" justifyContent="space-between">
                                             <Grid item xs={6}>
-                                                <Typography color="white" className='card-title'>Balance</Typography>
+                                                <Typography color="white" className='card-title'>Balance Anual</Typography>
                                             </Grid>
                                             <Grid item xs={6}>
 
@@ -434,7 +529,7 @@ export const ExpensesStats = (props:any) => {
                                                         </Avatar>
                                                     </Grid>
                                                     <Grid item>
-                                                        <Typography color="white" className='card-title'>$0</Typography>
+                                                        <Typography color="white" className='card-title'>{numberToCurrency(chartsSet.yearExpenses.expenseSum)}</Typography>
                                                         <Typography color="white" className='card-subtitle'>Gastos</Typography>
                                                     </Grid>
                                                 </Grid>
@@ -447,7 +542,7 @@ export const ExpensesStats = (props:any) => {
                                                         </Avatar>
                                                     </Grid>
                                                     <Grid item>
-                                                        <Typography color="white" className='card-title'>$0</Typography>
+                                                        <Typography color="white" className='card-title'>{numberToCurrency(chartsSet.yearExpenses.limitSum)}</Typography>
                                                         <Typography color="white" className='card-subtitle'>Limite Gastos</Typography>
                                                     </Grid>
                                                 </Grid>
@@ -456,8 +551,8 @@ export const ExpensesStats = (props:any) => {
                                     </Grid>
                                     <Grid item xs={12}>
                                         <Chart
-                                            options={graphs.yearExpenses.options}
-                                            series={graphs.yearExpenses.series}
+                                            options={yearExpensesChart}
+                                            series={chartsSet.yearExpenses.series}
                                             type="area"
                                         />
                                     </Grid>
@@ -466,6 +561,8 @@ export const ExpensesStats = (props:any) => {
                         </Box>
                     </Card>
                 </Grid>
+                :null
+                :null}
                 <Grid item xs={12} sm={12} md={12} lg={4}>
                     <Card sx={{backgroundColor: '#00897B'}} className='card'>
                         <Box padding="18px">
@@ -496,6 +593,8 @@ export const ExpensesStats = (props:any) => {
                         </Box>
                     </Card>
                 </Grid>
+                { props.filter === 'thisYear' || props.filter === 'lastYear' ?
+                chartsSet.yearExpensesType.show === true ?
                 <Grid item xs={12} sm={12} md={12} lg={7}>
                     <Card className='card'>
                         <Box padding="18px">
@@ -521,7 +620,7 @@ export const ExpensesStats = (props:any) => {
                                                         </Avatar>
                                                     </Grid>
                                                     <Grid item>
-                                                        <Typography color="white" className='card-title'>$0</Typography>
+                                                        <Typography color="white" className='card-title'>{numberToCurrency(chartsSet.yearExpensesType.expenseFijoSum)}</Typography>
                                                         <Typography color="white" className='card-subtitle'>Gastos Fijos</Typography>
                                                     </Grid>
                                                 </Grid>
@@ -534,7 +633,7 @@ export const ExpensesStats = (props:any) => {
                                                         </Avatar>
                                                     </Grid>
                                                     <Grid item>
-                                                        <Typography color="white" className='card-title'>$0</Typography>
+                                                        <Typography color="white" className='card-title'>{numberToCurrency(chartsSet.yearExpensesType.expenseVariableSum)}</Typography>
                                                         <Typography color="white" className='card-subtitle'>Gastos Variables</Typography>
                                                     </Grid>
                                                 </Grid>
@@ -543,8 +642,8 @@ export const ExpensesStats = (props:any) => {
                                     </Grid>
                                     <Grid item xs={12}>
                                         <Chart
-                                            options={graphs.typeofExpense.options}
-                                            series={graphs.typeofExpense.series}
+                                            options={yearExpensesType}
+                                            series={chartsSet.yearExpensesType.series}
                                             type="bar"
                                         />
                                     </Grid>
@@ -553,6 +652,10 @@ export const ExpensesStats = (props:any) => {
                         </Box>
                     </Card>
                 </Grid>
+                :null
+                :null}
+                { props.filter === 'thisYear' || props.filter === 'lastYear' ?
+                chartsSet.yearExpensesMap.show === true ?
                 <Grid item xs={12} sm={12} md={12} lg={5}>
                     <Card className='card'>
                         <Box padding="18px">
@@ -570,8 +673,8 @@ export const ExpensesStats = (props:any) => {
                                     </Grid>
                                     <Grid item xs={12}>
                                         <Chart
-                                            options={graphs.expensesMap.options}
-                                            series={graphs.expensesMap.series}
+                                            options={yearExpenseMap}
+                                            series={chartsSet.yearExpensesMap.series}
                                             type="treemap"
                                         />
                                     </Grid>
@@ -580,6 +683,8 @@ export const ExpensesStats = (props:any) => {
                         </Box>
                     </Card>
                 </Grid>
+                :null
+                :null}
             </Grid>
         </Grid>
     </Grid>

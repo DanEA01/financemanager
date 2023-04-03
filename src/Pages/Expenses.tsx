@@ -14,6 +14,7 @@ import { ExpensesTable } from '../Components/ExpensesTable'
 //Auth
 import { AuthContext } from '../utils/auth'
 import { getAccounts, getExpenses, getExpensesStats } from '../api/setApiCalls'
+import { Filter } from '../singleComponents/Filter'
 
 export const Expenses = (props:any) => {
   const [authContext, setAuthContext] = useContext<any>(AuthContext);
@@ -28,6 +29,22 @@ export const Expenses = (props:any) => {
       cardId: '',
       cardNum: 0,
   });
+  const [filter, setFilter] = useState('thisMonth');
+
+  const getExpensesAll = (accountId:string) => {
+    getExpenses(accountId,filter,authContext.token).then(response => {
+      setExpenses(response.data.expenses);
+    }).catch(error => {
+      console.log(error);
+    })
+
+    getExpensesStats(accountId,filter,authContext.token).then(response => {
+      setExpensesStats(response.data.expenses);
+      setopenBackdrop(false);
+    }).catch(error => {
+      console.log(error);
+    })
+  }
 
   useEffect(() => {
     if(authContext.token){
@@ -36,26 +53,22 @@ export const Expenses = (props:any) => {
         setAccounts(response.data.accounts)
         if(response.data !== ''){
           setSelectedCard({...selectedCard, cardId: response.data.accounts[0]._id, cardNum:response.data.accounts[0].last4Digits})
-
-          getExpenses(response.data.accounts[0]._id,'thisMonth',authContext.token).then(response => {
-            setExpenses(response.data.expenses);
-          }).catch(error => {
-            console.log(error);
-          })
-
-          getExpensesStats(response.data.accounts[0]._id,'thisMonth',authContext.token).then(response => {
-            setExpensesStats(response.data.expenses);
-          }).catch(error => {
-            console.log(error);
-          })
+          getExpensesAll(response.data.accounts[0]._id);
+          setopenBackdrop(false);
         }
-        setopenBackdrop(false);
       }).catch(error => {
         console.log(error);
       })
     }
   }, [authContext])
-  
+
+  useEffect(() => {
+    if(selectedCard.cardId !== ''){
+      setopenBackdrop(true);
+      
+      getExpensesAll(selectedCard.cardId);
+    }
+  }, [filter])
 
   const addAccountDialog = () => {
     setChoosenForm(<NewAccount />);
@@ -79,18 +92,11 @@ export const Expenses = (props:any) => {
     setSelectedCard({...selectedCard, cardId: id, cardNum:cardNum})
 
     setopenBackdrop(true);
-    getExpenses(id,'thisMonth',authContext.token).then(response => {
-      setExpenses(response.data.expenses);
-    }).catch(error => {
-      console.log(error);
-    })
+    getExpensesAll(id);
+  }
 
-    getExpensesStats(id,'thisMonth',authContext.token).then(response => {
-      setExpensesStats(response.data.expenses);
-      setopenBackdrop(false);
-    }).catch(error => {
-      console.log(error);
-    })
+  const handleFilterChange = (filter:string) => {
+    setFilter(filter);
   }
 
   return (
@@ -113,8 +119,9 @@ export const Expenses = (props:any) => {
             overflowX: 'hidden'}}>
             <IncomeTabs tabIndex={IncomeTabsIndex} handleIndexChange={SetIndexChange}/>
             <Accounts handleAddAccount={addAccountDialog} cards={accounts} selectedAccountID={handleSelectedAccountID}/>
+            <Filter value={filter} filterChange={handleFilterChange}/>
             {IncomeTabsIndex === 0 ?
-              <ExpensesStats data={expensesStats}/>
+              <ExpensesStats data={expensesStats} filter={filter}/>
             : 
               <ExpensesTable handleAddExpense={addExpenseDialog} data={expenses}/>
             }
