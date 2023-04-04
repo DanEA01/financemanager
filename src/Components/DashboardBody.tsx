@@ -24,7 +24,7 @@ export const DashboardBody = () => {
                 chart: {
                     events: {
                         dataPointSelection: function(event:any, chartContext:any, config:any) {
-                            setoverallDataDisplay({...overallDataDisplay, ingresos: config.w.config.series[0].data[config.dataPointIndex], gastos:config.w.config.series[1].data[config.dataPointIndex], ahorros: config.w.config.series[2].data[config.dataPointIndex]})
+                            setoverallDataDisplay({...overallDataDisplay, ingresos: config.w.config.series[0].data[config.dataPointIndex], gastos:config.w.config.series[1].data[config.dataPointIndex], balance: (config.w.config.series[0].data[config.dataPointIndex] - config.w.config.series[1].data[config.dataPointIndex])})
                         }
                     }
                   },
@@ -51,10 +51,6 @@ export const DashboardBody = () => {
                     name: 'Gastos',
                     data: [8000, 9500, 7500, 7000, 10500, 7000, 6850]
                 },
-                {
-                    name: 'Ahorro',
-                    data: [2500, 1000, 500, 2000, 0, 3000, 485]
-                }
             ]
             },
             balanceReport:{
@@ -219,8 +215,8 @@ export const DashboardBody = () => {
                                                         </Avatar>
                                                     </Grid>
                                                     <Grid item>
-                                                        <Typography color="white" className='card-title'>${overallDataDisplay.ahorros}</Typography>
-                                                        <Typography color="white" className='card-subtitle'>Ahorros</Typography>
+                                                        <Typography color="white" className='card-title'>${overallDataDisplay.balance}</Typography>
+                                                        <Typography color="white" className='card-subtitle'>Balance</Typography>
                                                     </Grid>
                                                 </Grid>
                                             </Grid>
@@ -289,124 +285,6 @@ export const DashboardBody = () => {
                                             <ListItemText primary="Otros" secondary="$1,500" />
                                         </ListItem>
                                     </List>
-                                    </Grid>
-                                </Grid>
-                            </CardContent>
-                        </Box>
-                    </Card>
-                </Grid>
-                <Grid item xs={12} sm={12} md={12} lg={8}>
-                    <Card className='card'>
-                        <Box padding="18px">
-                            <CardContent>
-                                <Grid container spacing={3} alignItems="center" justifyContent="center">
-                                    <Grid item xs={12}>
-                                        <Grid container alignItems="center" justifyContent="space-between">
-                                            <Grid item xs={6}>
-                                                <Typography color="white" className='card-title'>Balance</Typography>
-                                            </Grid>
-                                            <Grid item xs={6}>
-
-                                            </Grid>
-                                        </Grid>
-                                    </Grid>
-                                    <Grid item xs={12}>
-                                        <Grid container alignItems="center" justifyContent="space-evenly">
-                                            <Grid item xs={4}>
-                                                <Grid container alignItems="center" justifyContent="center" spacing={2}>
-                                                    <Grid item>
-                                                        <Avatar variant="rounded" sx={{backgroundColor:'#00796B'}}>
-                                                            <LocalAtmIcon />
-                                                        </Avatar>
-                                                    </Grid>
-                                                    <Grid item>
-                                                        <Typography color="white" className='card-title'>${overallDataDisplay.ingresos}</Typography>
-                                                        <Typography color="white" className='card-subtitle'>Gastos</Typography>
-                                                    </Grid>
-                                                </Grid>
-                                            </Grid>
-                                            <Grid item xs={4}>
-                                                <Grid container alignItems="center" justifyContent="center" spacing={2}>
-                                                    <Grid item>
-                                                        <Avatar variant="rounded" sx={{backgroundColor:'#C62828'}}>
-                                                            <ShoppingBagOutlinedIcon />
-                                                        </Avatar>
-                                                    </Grid>
-                                                    <Grid item>
-                                                        <Typography color="white" className='card-title'>${overallDataDisplay.gastos}</Typography>
-                                                        <Typography color="white" className='card-subtitle'>Limite Gastos</Typography>
-                                                    </Grid>
-                                                </Grid>
-                                            </Grid>
-                                            <Grid item xs={4}>
-                                                <Grid container alignItems="center" justifyContent="center" spacing={2}>
-                                                    <Grid item>
-                                                        <Avatar variant="rounded" sx={{backgroundColor:'#283593'}}>
-                                                            <SavingsOutlinedIcon />
-                                                        </Avatar>
-                                                    </Grid>
-                                                    <Grid item>
-                                                        <Typography color="white" className='card-title'>${overallDataDisplay.ahorros}</Typography>
-                                                        <Typography color="white" className='card-subtitle'>Balance</Typography>
-                                                    </Grid>
-                                                </Grid>
-                                            </Grid>
-                                        </Grid>
-                                    </Grid>
-                                    <Grid item xs={12}>
-                                        <Chart
-                                            options={graphs.incomeVsExpenses.options}
-                                            series={graphs.incomeVsExpenses.series}
-                                            type="area"
-                                        />
-                                    </Grid>
-                                </Grid>
-                            </CardContent>
-                        </Box>
-                    </Card>
-                </Grid>
-                <Grid item xs={12} sm={12} md={12} lg={4}>
-                    <Card sx={{backgroundColor: '#546E7A'}} className='card'>
-                        <Box padding="18px">
-                            <CardContent>
-                                <Grid container spacing={3} alignItems="center" justifyContent="center">
-                                    <Grid item xs={12}>
-                                        <Typography className='card-title-white'>Balance</Typography>
-                                    </Grid>
-                                    <Grid item xs={12}>
-                                        <Typography color="white" className='card-amount'>${overallDataDisplay.balance}</Typography>
-                                    </Grid>
-                                    <Grid item xs={12}>
-                                        <Chart
-                                            options={graphs.balanceReport.options}
-                                            series={graphs.balanceReport.series}
-                                            type="line"
-                                        />
-                                    </Grid>
-                                    <Divider />
-                                    <Grid item xs={12}>
-                                        <Grid container alignItems="center" justifyContent="space-evenly">
-                                            <Grid item sm={6}>
-                                                <Grid container spacing={2}>
-                                                    <Grid item>
-                                                        <Typography color="white" >Ingresos</Typography>
-                                                    </Grid>
-                                                    <Grid item>
-                                                        <Typography color="white" >${overallDataDisplay.ahorros}</Typography>
-                                                    </Grid>
-                                                </Grid>
-                                            </Grid>
-                                            <Grid item sm={6}>
-                                                <Grid container spacing={2}>
-                                                    <Grid item>
-                                                        <Typography color="white" >Gastos</Typography>
-                                                    </Grid>
-                                                    <Grid item>
-                                                        <Typography color="white" >${overallDataDisplay.ahorros}</Typography>
-                                                    </Grid>
-                                                </Grid>
-                                            </Grid>
-                                        </Grid>
                                     </Grid>
                                 </Grid>
                             </CardContent>

@@ -140,25 +140,31 @@ export const ExpensesStats = (props:any) => {
         const expensesVariable:any = [];
 
         if(data !== undefined){
-            let lastKey:any = Object.keys(data.Fijo).pop();
-            let firstKey:any = Object.keys(data.Fijo)[0] <= Object.keys(data.Variable)[0] ? Object.keys(data.Fijo)[0] : Object.keys(data.Variable)[0]
+            let lastKeyFijo:any = data.Fijo !== undefined ? Object.keys(data.Fijo).pop() : -1;
+            let firstKeyFijo:any = data.Fijo !== undefined ? Object.keys(data.Fijo)[0] : 100;
+            let lastKeyVariable:any = data.Variable !== undefined ? Object.keys(data.Variable).pop() : -1;
+            let firstKeyVariable:any = data.Variable !== undefined ? Object.keys(data.Variable)[0] : 100;
+            let firstKey = firstKeyFijo <= firstKeyVariable ? firstKeyFijo : firstKeyVariable;
+            let lastKey = lastKeyFijo >= lastKeyVariable ? lastKeyFijo : lastKeyVariable;
+
             for(let i=firstKey;i<=lastKey;i++){
-                data.Fijo[i] !== undefined  ? expenseFijoSum += data.Fijo[i] : expenseFijoSum += 0;
-                data.Fijo[i] !== undefined  ? expensesFijo.push(data.Fijo[i]) : expensesFijo.push(0);
+                data.Fijo !== undefined ? data.Fijo[i] !== undefined  ? expenseFijoSum += data.Fijo[i] : expenseFijoSum += 0 : expenseFijoSum += 0;
+                data.Fijo !== undefined ? data.Fijo[i] !== undefined  ? expensesFijo.push(data.Fijo[i]) : expensesFijo.push(0) : expensesFijo.push(0);
+                data.Variable !== undefined ? data.Variable[i] !== undefined  ? expenseVariableSum += data.Variable[i] : expenseVariableSum += 0 : expenseVariableSum += 0;
+                data.Variable !== undefined ? data.Variable[i] !== undefined  ? expensesVariable.push(data.Variable[i]) : expensesVariable.push(0) : expensesVariable.push(0);
             }
-            //get the sum of expenses Fijo and the month labels
-            Object.keys(data.Fijo).map((key:any) => {
-                labels.push(months[key]);
-            })
-            lastKey = Object.keys(data.Variable).pop();
-            for(let i=firstKey;i<=lastKey;i++){
-                data.Variable[i] !== undefined  ? expenseVariableSum += data.Variable[i] : expenseVariableSum += 0;
-                data.Variable[i] !== undefined  ? expensesVariable.push(data.Variable[i]) : expensesVariable.push(0);
+            if(data.Fijo !== undefined){
+                //get the sum of expenses Fijo and the month labels
+                Object.keys(data.Fijo).map((key:any) => {
+                    labels.push(months[key]);
+                })
             }
-            //get the sum of expenses Variable and the month labels
-            Object.keys(data.Variable).map((key:any) => {
-                labels2.push(months[key]);
-            })
+            if(data.Variable !== undefined){
+                //get the sum of expenses Variable and the month labels
+                Object.keys(data.Variable).map((key:any) => {
+                    labels2.push(months[key]);
+                })
+            }
             /* //Combine the 2 labels and remove duplicates
             this will create an array of the months the expenses took place */
             labels = labels.concat(labels2.filter((item:any) => labels.indexOf(item) < 0));

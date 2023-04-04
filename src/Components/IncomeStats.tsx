@@ -1,5 +1,5 @@
 import { Avatar, Box, Card, CardContent, Grid, List, ListItem, ListItemAvatar, ListItemText, Stack, Typography } from '@mui/material'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 //Charts
 import Chart from "react-apexcharts";
 //Icons
@@ -9,67 +9,156 @@ import MonetizationOnOutlinedIcon from '@mui/icons-material/MonetizationOnOutlin
 import CurrencyExchangeOutlinedIcon from '@mui/icons-material/CurrencyExchangeOutlined';
 
 
-export const IncomeStats = () => {
-
-    const [graphs, setgraphs] = useState<any>(
-        {
-            yearIncome: {
-                options: {
-                    chart: {
-                      type: 'area'
-                    },
-                    dataLabels: {
-                      enabled: false
-                    },
-                    stroke: {
-                      curve: 'smooth'
-                    },
-                    grid: {
-                      show: false,
-                    },
-                    colors: ['#90CAF9', '#E1BEE7'],
-                    xaxis: {
-                        show: false,
-                        categories: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio"],
-                        labels: {
-                          show: false
-                        },
-                        axisBorder: {
-                          show: false
-                        },
-                        axisTicks: {
-                          show: false
-                        },
-                    },
-                    yaxis: {
-                        show: false,
-                        labels: {
-                          show: false
-                        },
-                        axisBorder: {
-                          show: false
-                        },
-                        axisTicks: {
-                          show: false
-                        }
-                    },
+export const IncomeStats = (props:any) => {
+    const [statsData, setStatsData] = useState<any>('');
+    const [chartsSet, setChartsSet] = useState<any>({
+        yearIncomes: {
+            series:[
+                {
+                    name: "Ingresos Fijos",
+                    data: [0]
                 },
-                series: [
-                    {
-                        name: "Ingresos Fijos",
-                        data: [15000, 17000, 20000, 14000, 13500, 9800, 16540]
-                    },
-                    {
-                        name: "Ingresos Variables",
-                        data: [14000, 14000, 14000, 14000, 14000, 14000, 14000]
-                    }
-                ],
-            },
+                {
+                    name: "Ingresos Variables",
+                    data: [0]
+                },
+            ],
+            labels: [''],
+            incomeFijoSum: 0,
+            incomeVariableSum: 0,
+            //variable to show or hide chart if it has no data
+            show:false
+        },
+    });
+    const months = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre']    
+
+    useEffect(() => {
+        if(props.data !== null){
+          setStatsData(props.data)
         }
-    )
+      }, [props.data])
+
+    useEffect(() => {
+        if(statsData !== ''){
+            setYearIncStats(statsData.incomesStatsByYear.incomesByType);
+        }
+    }, [statsData])
+
+    const numberToCurrency = (num:any) => {
+        const formatter = new Intl.NumberFormat('es-MX');
+        return '$ '+formatter.format(num);
+    }
 
     const generateRandomColor = () => {
         return '#'+Math.floor(Math.random()*16777215).toString(16)
+    }
+
+    const setYearIncStats = (data:any) => {
+        let incomeFijoSum = 0;
+        let incomeVariableSum = 0;
+        let incomeFijo:any = [];
+        let incomeVariable:any = [];
+        let labels:any = [];
+        let labels2:any = [];
+
+        if(data !== undefined){
+            console.log(data);
+            let lastKeyFijo:any = data.Fijo !== undefined ? Object.keys(data.Fijo).pop() : -1;
+            let firstKeyFijo:any = data.Fijo !== undefined ? Object.keys(data.Fijo)[0] : 100;
+            let lastKeyVariable:any = data.Variable !== undefined ? Object.keys(data.Variable).pop() : -1;
+            let firstKeyVariable:any = data.Variable !== undefined ? Object.keys(data.Variable)[0] : 100;
+            let firstKey = firstKeyFijo <= firstKeyVariable ? firstKeyFijo : firstKeyVariable;
+            let lastKey = lastKeyFijo >= lastKeyVariable ? lastKeyFijo : lastKeyVariable;
+            //let firstKey:any = Object.keys(data.Fijo)[0] <= Object.keys(data.Variable)[0] ? Object.keys(data.Fijo)[0] : Object.keys(data.Variable)[0];
+            
+            for(let i=firstKey;i<=lastKey;i++){
+                data.Fijo !== undefined ? data.Fijo[i] !== undefined  ? incomeFijo.push(data.Fijo[i]) : incomeFijo.push(0) : incomeFijo.push(0);
+                data.Fijo !== undefined ? data.Fijo[i] !== undefined  ? incomeFijoSum += data.Fijo[i] : incomeFijoSum += 0 : incomeFijoSum += 0;
+                data.Variable !== undefined  ? data.Variable[i] !== undefined ? incomeVariable.push(data.Variable[i]) : incomeVariable.push(0) : incomeVariable.push(0);
+                data.Variable !== undefined  ? data.Variable[i] !== undefined ? incomeVariableSum += data.Variable[i] : incomeVariableSum += 0 : incomeVariableSum += 0;
+            }
+
+            if(data.Fijo !== undefined){
+                //get the sum of expenses Fijo and the month labels
+                Object.keys(data.Fijo).map((key:any) => {
+                    labels.push(months[key]);
+                })
+            }
+            if(data.Variable !== undefined){
+                //get the sum of expenses Variable and the month labels
+                Object.keys(data.Variable).map((key:any) => {
+                    labels2.push(months[key]);
+                })
+            }
+            /* //Combine the 2 labels and remove duplicates
+            this will create an array of the months the expenses took place */
+            labels = labels.concat(labels2.filter((item:any) => labels.indexOf(item) < 0));
+        }
+
+        setChartsSet((prevChartSet:any) => ({
+            ...prevChartSet,
+            yearIncomes: {
+                ...prevChartSet.yearIncomes,
+                series:[
+                    {
+                        name: "Ingresos Fijos",
+                        data: incomeFijo
+                    },
+                    {
+                        name: "Ingresos Variables",
+                        data: incomeVariable
+                    },
+                ],
+                labels:labels,
+                incomeFijoSum:incomeFijoSum,
+                incomeVariableSum:incomeVariableSum,
+                show: data !== undefined ? true : false,
+            }
+        }));
+
+        console.log(chartsSet);
+        
+    }
+
+    const yearExpensesChart: any = {
+        chart: {
+            type: 'area'
+        },
+        dataLabels: {
+            enabled: false
+        },
+        stroke: {
+            curve: 'smooth'
+        },
+        grid: {
+            show: false,
+        },
+        colors: ['#90CAF9', '#E1BEE7'],
+        xaxis: {
+            show: false,
+            categories: chartsSet.yearIncomes.labels,
+            labels: {
+            show: false
+            },
+            axisBorder: {
+            show: false
+            },
+            axisTicks: {
+            show: false
+            },
+        },
+        yaxis: {
+            show: false,
+            labels: {
+            show: false
+            },
+            axisBorder: {
+            show: false
+            },
+            axisTicks: {
+            show: false
+            }
+        },
     }
 
   return (
@@ -97,7 +186,7 @@ export const IncomeStats = () => {
                                             </Grid>
                                             <Grid item xs={12}>
                                                 <Stack direction="row" spacing={1} alignItems="center" alignContent="center">
-                                                    <Typography color="white" className='card-amount'>$25,000</Typography>
+                                                    <Typography color="white" className='card-amount'>{numberToCurrency(statsData.totalIncome)}</Typography>
                                                     <Avatar sx={{backgroundColor:'#E8EAF6', width: 24, height: 24 }}>
                                                         <TrendingDownIcon sx={{fontSize: '1.1rem', color:'#5C6BC0'}}/>
                                                     </Avatar>
@@ -138,7 +227,7 @@ export const IncomeStats = () => {
                                                         </Avatar>
                                                     </Grid>
                                                     <Grid item>
-                                                        <Typography color="white" className='card-title'>$0</Typography>
+                                                        <Typography color="white" className='card-title'>{numberToCurrency(chartsSet.yearIncomes.incomeFijoSum)}</Typography>
                                                         <Typography color="white" className='card-subtitle'>Ingreso Fijo</Typography>
                                                     </Grid>
                                                 </Grid>
@@ -151,7 +240,7 @@ export const IncomeStats = () => {
                                                         </Avatar>
                                                     </Grid>
                                                     <Grid item>
-                                                        <Typography color="white" className='card-title'>$0</Typography>
+                                                        <Typography color="white" className='card-title'>{numberToCurrency(chartsSet.yearIncomes.incomeVariableSum)}</Typography>
                                                         <Typography color="white" className='card-subtitle'>Ingreso Variable</Typography>
                                                     </Grid>
                                                 </Grid>
@@ -160,8 +249,8 @@ export const IncomeStats = () => {
                                     </Grid>
                                     <Grid item xs={12}>
                                         <Chart
-                                            options={graphs.yearIncome.options}
-                                            series={graphs.yearIncome.series}
+                                            options={yearExpensesChart}
+                                            series={chartsSet.yearIncomes.series}
                                             type="area"
                                         />
                                     </Grid>
@@ -180,22 +269,19 @@ export const IncomeStats = () => {
                                     </Grid>
                                     <Grid item xs={12}>
                                     <List sx={{ width: '100%'}}>
-                                        <ListItem className='expenses-li' sx={{backgroundColor: 'white'}}>
-                                            <ListItemAvatar>
-                                            <Avatar sx={{backgroundColor: generateRandomColor()}}>
-                                                <MonetizationOnOutlinedIcon />
-                                            </Avatar>
-                                            </ListItemAvatar>
-                                            <ListItemText primary="Nomina" secondary="$13,500"/>
-                                        </ListItem>
-                                        <ListItem className='expenses-li' sx={{backgroundColor: 'white'}}>
-                                            <ListItemAvatar>
-                                            <Avatar sx={{backgroundColor: generateRandomColor()}}>
-                                                <MonetizationOnOutlinedIcon />
-                                            </Avatar>
-                                            </ListItemAvatar>
-                                            <ListItemText primary="Dividendos" secondary="$25,500" />
-                                        </ListItem>
+                                        {statsData.incomesStatsByMonth !== undefined ?
+                                        Object.keys(statsData.incomesStatsByMonth).map((key, index) => {
+                                            return (
+                                            <ListItem className='expenses-li' sx={{backgroundColor: 'white'}}>
+                                                <ListItemAvatar>
+                                                <Avatar sx={{backgroundColor: generateRandomColor()}}>
+                                                    <MonetizationOnOutlinedIcon />
+                                                </Avatar>
+                                                </ListItemAvatar>
+                                                <ListItemText primary={key} secondary={numberToCurrency(statsData.incomesStatsByMonth[key])}/>
+                                            </ListItem>
+                                            );
+                                        }) :null}
                                     </List>
                                     </Grid>
                                 </Grid>

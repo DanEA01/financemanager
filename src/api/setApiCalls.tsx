@@ -131,3 +131,55 @@ export const getExpensesStats = async (idAccount:string,filter:string,token:stri
 
     return result;
 }
+
+export const insIncome = async (title:string,account:number,date:string,amount:number,category:string,type:string,comments:string,incAuto:boolean,idAccount:string,token:string) => {
+    const result = await axios({
+        method: 'post',
+        withCredentials: true,
+        url: process.env.REACT_APP_API_ENDPOINT+ 'insIncome',
+        data:{
+            title: title,
+            account: account,
+            date: date,
+            amount: amount,
+            category: category,
+            type: type,
+            comments: comments,
+            incAuto: incAuto,
+            idAccount: idAccount    
+        },
+        headers:{'Strict-Transport-Security': 'max-age=63072000','Content-Type': 'application/x-www-form-urlencoded','Access-Control-Allow-Credentials': 'true', 'Authorization' : 'Bearer '+token },
+    });
+
+    return result;
+}
+
+export const getIncomes = async (idAccount:string,filter:string,token:string) => {
+    const result = await axios({
+        method: 'get',
+        withCredentials: true,
+        url: process.env.REACT_APP_API_ENDPOINT+ 'Incomes',
+        params: {
+            idAccount: idAccount,
+            filter: filter,
+        },
+        headers:{'Strict-Transport-Security': 'max-age=63072000','Content-Type': 'application/x-www-form-urlencoded','Access-Control-Allow-Credentials': 'true', 'Authorization' : 'Bearer '+token },
+    });
+
+    return result;
+}
+
+export const getIncomesStats = async (idAccount:string,filter:string,token:string) => {
+    const result = await axios({
+        method: 'get',
+        withCredentials: true,
+        url: process.env.REACT_APP_API_ENDPOINT+ 'incomesStats',
+        params: {
+            idAccount: idAccount,
+            filter: filter,
+        },
+        headers:{'Strict-Transport-Security': 'max-age=63072000','Content-Type': 'application/x-www-form-urlencoded','Access-Control-Allow-Credentials': 'true', 'Authorization' : 'Bearer '+token },
+    });
+
+    return result;
+}

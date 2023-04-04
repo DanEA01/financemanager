@@ -71,7 +71,7 @@ export const DashboardHeader = () => {
                                         <TrendingDownIcon sx={{fontSize: '1.1rem', color:'#3F51B5'}}/>
                                     </Avatar>
                                 </Stack>
-                                <Typography color="white" className='card3-subText'>Ahorros</Typography>
+                                <Typography color="white" className='card3-subText'>Balance</Typography>
                             </CardContent>
                         </Box>
                     </Card>
