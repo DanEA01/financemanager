@@ -1,6 +1,8 @@
-import { Card, CardActionArea, Chip, Stack, Typography } from '@mui/material'
+import { Card, CardActionArea, Chip, IconButton, Stack, Typography } from '@mui/material'
 //css
 import '../assets/css/Cards.css'
+//Icons
+import EditIcon from '@mui/icons-material/Edit';
 
 export const CreditCard = (props:any) => {
   
@@ -18,6 +20,9 @@ export const CreditCard = (props:any) => {
             <Typography className="text" color="inherit" fontSize={15} letterSpacing={2}>{props.cardName}</Typography>
         </Stack>
         </CardActionArea>
+        <IconButton className="edit-card" aria-label="edit" sx={{position: 'absolute', bottom: '10px', left: '290px', color: 'white'}} onClick={() => props.editAccountClick(props.cardId)}>
+          <EditIcon />
+        </IconButton>
     </Card>
   )
 }

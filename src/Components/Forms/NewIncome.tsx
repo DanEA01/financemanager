@@ -14,6 +14,8 @@ import LocalOfferOutlinedIcon from '@mui/icons-material/LocalOfferOutlined';
 import SavingsOutlinedIcon from '@mui/icons-material/SavingsOutlined';
 //auth
 import { AuthContext } from '../../utils/auth';
+//date
+import moment from "moment";
 
 
 export const NewIncome = (props:any) => {
@@ -29,6 +31,12 @@ export const NewIncome = (props:any) => {
 
     const Tags = ['Nomina','Bono','Fondo Ahorro','Comisión','Otros'];
     const Types = ['Variable', 'Fijo'];
+
+    useEffect(() => {
+        if(props.data !== undefined) {
+            setIncData({incType: props.data.type, incCat: props.data.category})
+        }
+      }, [props.data])
 
     const incomeSchema = z.object({
         title: z.string()
@@ -78,7 +86,7 @@ export const NewIncome = (props:any) => {
 
         //function to handle the submit if the validations where successfull  
     const handleInsInc: SubmitHandler<incinput> = (values) => {
-        insIncome(values.title,values.account,values.date,values.amount,values.category,values.type,values.comments,values.incAuto,props.selectedAcc.cardId,authContext.token).then(response => {
+        insIncome(props.data.id,values.title,values.account,values.date,values.amount,values.category,values.type,values.comments,values.incAuto,props.selectedAcc.cardId,authContext.token).then(response => {
             console.log(response);
         }).catch(error => {
             console.log(error);
@@ -94,7 +102,7 @@ export const NewIncome = (props:any) => {
     }
   return (
     <Card className='card' sx={{overflow: 'auto'}} >
-        <CardHeader className='card-title' title="Agregar Ingreso" sx={{backgroundColor: '#ECEFF1'}} />
+        <CardHeader className='card-title' title={props.data.id !== undefined ? "Editar Ingreso" : "Agregar Ingreso"} sx={{backgroundColor: '#ECEFF1'}} />
         <CardContent>
             <Grid container spacing={3} sx={{marginY: '20px'}} alignItems="center" justifyContent="space-between">
                 <Grid item xs={12} sm={6}>
@@ -104,6 +112,7 @@ export const NewIncome = (props:any) => {
                         </Grid>
                         <Grid item xs={10}>
                             <TextField fullWidth multiline minRows={1} variant='outlined' color='primary' label="Descripción"
+                            defaultValue={props.data.title}
                             error={!!errors['title']}
                             helperText={errors['title'] ? errors['title'].message : ''}
                             {...register("title")}/>
@@ -134,6 +143,7 @@ export const NewIncome = (props:any) => {
                         </Grid>
                         <Grid item xs={10}>
                             <TextField type="date" InputLabelProps={{ shrink: true }} fullWidth variant='outlined' color='primary' label='Fecha Ingreso'
+                            defaultValue={moment(props.data.date,'DD/MM/YYYY').format('YYYY-MM-DD')}
                             error={!!errors['date']}
                             helperText={errors['date'] ? errors['date'].message : ''}
                             {...register("date")}/>
@@ -147,6 +157,7 @@ export const NewIncome = (props:any) => {
                         </Grid>
                         <Grid item xs={10}>
                             <TextField type="number" InputLabelProps={{ shrink: true }} fullWidth variant='outlined' color='primary' label="Monto"
+                            defaultValue={props.data.amount}
                             error={!!errors['amount']}
                             helperText={errors['amount'] ? errors['amount'].message : ''}
                             {...register("amount")}/>
@@ -219,6 +230,7 @@ export const NewIncome = (props:any) => {
                         </Grid>
                         <Grid item xs={10}>
                             <TextField fullWidth multiline minRows={2} variant='outlined' color='primary' label="Observaciones"
+                            defaultValue={props.data.comments}
                             error={!!errors['comments']}
                             helperText={errors['comments'] ? errors['comments'].message : ''}
                             {...register("comments")}/>
@@ -240,7 +252,11 @@ export const NewIncome = (props:any) => {
         <CardActions sx={{padding: '16px', backgroundColor: '#ECEFF1'}}>
             <Grid container spacing={2} alignItems="center" justifyContent='flex-end'>
                 <Grid item>
-                    <Button variant='contained' color='primary' onClick={handleSubmit(handleInsInc)}>Agregar</Button>
+                    {props.data.id !== undefined ?
+                        <Button variant='contained' color='secondary' onClick={handleSubmit(handleInsInc)}>Editar</Button>
+                    :
+                        <Button variant='contained' color='primary' onClick={handleSubmit(handleInsInc)}>Agregar</Button>
+                    }
                 </Grid>
             </Grid>
         </CardActions>

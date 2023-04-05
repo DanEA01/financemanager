@@ -1,3 +1,4 @@
+import { idID } from '@mui/material/locale';
 import axios from 'axios';
 
 axios.defaults.withCredentials = true
@@ -45,12 +46,14 @@ export const setVerify = async () => {
     return result;
 }
 
-export const setAddAccount = async (alias:string,type:string,cardType:string,last4Digits:number,cardBrand:string,cutoffDate:number,payDate:number,limit:number,token:string) => {
+export const setAddAccount = async (id:string,alias:string,type:string,cardType:string,last4Digits:number,cardBrand:string,cutoffDate:number,payDate:number,limit:number,token:string) => {
+    console.log(id);
     const result = await axios({
         method: 'post',
         withCredentials: true,
         url: process.env.REACT_APP_API_ENDPOINT+ 'insAccount',
         data: {
+            id: id,
             alias: alias,
             type: type,
             cardType: cardType,
@@ -80,12 +83,13 @@ export const getAccounts = async (type:string,token:string) => {
     return result;
 }
 
-export const insExpense = async (title:string,account:number,date:string,amount:number,category:string,type:string,comments:string,expAuto:boolean,idAccount:string,token:string) => {
+export const insExpense = async (id:string,title:string,account:number,date:string,amount:number,category:string,type:string,comments:string,expAuto:boolean,idAccount:string,token:string) => {
     const result = await axios({
         method: 'post',
         withCredentials: true,
         url: process.env.REACT_APP_API_ENDPOINT+ 'insExpense',
         data:{
+            id:id,
             title: title,
             account: account,
             date: date,
@@ -132,12 +136,13 @@ export const getExpensesStats = async (idAccount:string,filter:string,token:stri
     return result;
 }
 
-export const insIncome = async (title:string,account:number,date:string,amount:number,category:string,type:string,comments:string,incAuto:boolean,idAccount:string,token:string) => {
+export const insIncome = async (id:string,title:string,account:number,date:string,amount:number,category:string,type:string,comments:string,incAuto:boolean,idAccount:string,token:string) => {
     const result = await axios({
         method: 'post',
         withCredentials: true,
         url: process.env.REACT_APP_API_ENDPOINT+ 'insIncome',
         data:{
+            id:id,
             title: title,
             account: account,
             date: date,

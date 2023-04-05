@@ -17,6 +17,10 @@ export const Accounts = (props:any) => {
         setSelectedIndex(index);
     }
 
+    const handleEditClick = (id:string) => {
+        props.editAccount(id);
+    }
+
   return (
     <>  
         <Grid container spacing={3}>
@@ -24,8 +28,8 @@ export const Accounts = (props:any) => {
                 <Grid container spacing={3} alignItems="center" wrap="nowrap" sx={{ overflow: 'auto'}}>
                     {props.cards !== null ?
                     props.cards.map((card:any,index:number) => (
-                        <Grid item>
-                            <CreditCard cardId={card._id} cardNumber={card.last4Digits} cardName={card.alias} cardType={card.cardBrand} indexClick={handleIndexClick} index={index} isSelected={index === selectedIndex}/>
+                        <Grid item key={"account"+index}>
+                            <CreditCard cardId={card._id} cardNumber={card.last4Digits} cardName={card.alias} cardType={card.cardBrand} indexClick={handleIndexClick} index={index} editAccountClick={handleEditClick} isSelected={index === selectedIndex}/>
                         </Grid>
                     )):null}
                     <Grid item>

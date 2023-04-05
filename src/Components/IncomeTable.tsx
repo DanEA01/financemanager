@@ -61,6 +61,7 @@ export const IncomeTable = (props:any) => {
                                             columns={columns}
                                             autoPageSize
                                             pageSizeOptions={[5]}
+                                            onRowClick={(e) => props.rowClick(e.row)}
                                         />
                                     </Grid>
                                 </Grid>

@@ -25,7 +25,7 @@ export const Home = (props:any) => {
     console.log(month);
     topExpensesByMonth(month,authContext.token).then(response => {
       console.log(response);
-      setTopExpenses(response.data.expenses.expensesByType)
+      setTopExpenses(response.data)
     }).catch(error => {
       console.log(error);
     })

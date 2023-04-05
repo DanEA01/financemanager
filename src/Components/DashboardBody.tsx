@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react'
 //Charts
 import Chart from "react-apexcharts";
 //Icons
+import MonetizationOnOutlinedIcon from '@mui/icons-material/MonetizationOnOutlined';
 import LocalAtmIcon from '@mui/icons-material/LocalAtm';
 import ShoppingBagOutlinedIcon from '@mui/icons-material/ShoppingBagOutlined';
 import SavingsOutlinedIcon from '@mui/icons-material/SavingsOutlined';
@@ -42,6 +43,7 @@ export const DashboardBody = (props:any) => {
 
     useEffect(() => {
         if(props.topExpenses !== null){
+            console.log(props.topExpenses);
             setExpensesData(props.topExpenses)
         }
     }, [props.topExpenses])
@@ -222,34 +224,71 @@ export const DashboardBody = (props:any) => {
                     </Card>
                 </Grid>
                 <Grid item xs={12} sm={12} md={12} lg={4}>
-                    <Card sx={{backgroundColor: '#757575'}} className='card'>
-                        <Box padding="18px">
-                            <CardContent>
-                                <Grid container spacing={3} alignItems="center" justifyContent="center">
-                                    <Grid item xs={12}>
-                                        <Typography className='card-title-white'>Gastos Principales</Typography>
-                                    </Grid>
-                                    <Grid item xs={12}>
-                                    <List sx={{ width: '100%'}}>
-                                    {expensesData !== undefined ?
-                                    Object.keys(expensesData).map((key, index) => {
-                                        return (
-                                        <ListItem className='expenses-li' sx={{backgroundColor: 'white'}}>
-                                            <ListItemAvatar>
-                                            <Avatar sx={{backgroundColor: generateRandomColor()}}>
-                                                <LocalOfferOutlinedIcon />
-                                            </Avatar>
-                                            </ListItemAvatar>
-                                            <ListItemText primary={key} secondary={numberToCurrency(expensesData[key])}/>
-                                        </ListItem>
-                                        );
-                                    }) :null}
-                                    </List>
-                                    </Grid>
-                                </Grid>
-                            </CardContent>
-                        </Box>
-                    </Card>
+                    <Grid container direction='column' spacing={2}>
+                        <Grid item xs={12} sm={12} md={12} lg={4}>
+                            <Card sx={{backgroundColor: '#757575'}} className='card'>
+                                <Box padding="18px">
+                                    <CardContent>
+                                        <Grid container spacing={3} alignItems="center" justifyContent="center">
+                                            <Grid item xs={12}>
+                                                <Typography className='card-title-white'>Gastos Principales</Typography>
+                                            </Grid>
+                                            <Grid item xs={12}>
+                                            <List sx={{ width: '100%'}}>
+                                            {expensesData.expenses !== undefined ?
+                                            expensesData.expenses.expensesByType !== undefined ?
+                                            Object.keys(expensesData.expenses.expensesByType).map((key, index) => {
+                                                return (
+                                                <ListItem className='expenses-li' sx={{backgroundColor: 'white'}}>
+                                                    <ListItemAvatar>
+                                                    <Avatar sx={{backgroundColor: generateRandomColor()}}>
+                                                        <LocalOfferOutlinedIcon />
+                                                    </Avatar>
+                                                    </ListItemAvatar>
+                                                    <ListItemText primary={key} secondary={numberToCurrency(expensesData.expenses.expensesByType[key])}/>
+                                                </ListItem>
+                                                );
+                                            }) :null : null}
+                                            </List>
+                                            </Grid>
+                                        </Grid>
+                                    </CardContent>
+                                </Box>
+                            </Card>
+                        </Grid>
+                        <Grid item xs={12} sm={12} md={12} lg={4}>
+                            <Card sx={{backgroundColor: '#d2c8bf'}} className='card'>
+                                <Box padding="18px">
+                                    <CardContent>
+                                        <Grid container spacing={3} alignItems="center" justifyContent="center">
+                                            <Grid item xs={12}>
+                                                <Typography className='card-title-white'>Ingresos Principales</Typography>
+                                            </Grid>
+                                            <Grid item xs={12}>
+                                            <List sx={{ width: '100%'}}>
+                                            {expensesData.incomes !== undefined ?
+                                            expensesData.incomes.incomeByType !== undefined ?
+                                            Object.keys(expensesData.incomes.incomeByType).map((key, index) => {
+                                                return (
+                                                <ListItem className='expenses-li' sx={{backgroundColor: 'white'}}>
+                                                    <ListItemAvatar>
+                                                    <Avatar sx={{backgroundColor: generateRandomColor()}}>
+                                                        <MonetizationOnOutlinedIcon />
+                                                    </Avatar>
+                                                    </ListItemAvatar>
+                                                    <ListItemText primary={key} secondary={numberToCurrency(expensesData.incomes.incomeByType[key])}/>
+                                                </ListItem>
+                                                );
+                                            }) :null : null}
+                                            </List>
+                                            </Grid>
+                                        </Grid>
+                                    </CardContent>
+                                </Box>
+                            </Card>
+                        </Grid>
+                    </Grid>
+                    
                 </Grid>
             </Grid>
         </Grid>

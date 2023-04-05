@@ -18,7 +18,7 @@ import { setAddAccount } from '../../api/setApiCalls';
 //Auth
 import { AuthContext } from '../../utils/auth';
 
-export const NewAccount = () => {
+export const NewAccount = (props:any) => {
   const theme = useTheme();
   const [authContext, setAuthContext] = useContext<any>(AuthContext);
   const [cardType, setcardType] = useState<any>('Credit');
@@ -26,9 +26,16 @@ export const NewAccount = () => {
     {
         type: 'Expense',
         cardType: 'Credit',
-        cardBrand: 'Visa',
+        cardBrand: 'visa',
     }
   );
+
+  useEffect(() => {
+    if(props.data._id !== undefined){
+        setCardData({type:props.data.type,cardType:props.data.cardType,cardBrand:props.data.cardBrand})
+    }
+  }, [props.data])
+  
 
   const accountSchema = object({
     alias: string()
@@ -108,8 +115,7 @@ export const NewAccount = () => {
 
     //function to handle the submit if the validations where successfull  
     const handleInsAcc: SubmitHandler<accinput> = (values) => {
-        console.log(values);
-        setAddAccount(values.alias,values.type,values.cardType,values.last4Digits,values.cardBrand,values.cutoffDate,values.payDate,values.limit,authContext.token).then(response => {
+        setAddAccount(props.data._id,values.alias,values.type,values.cardType,values.last4Digits,values.cardBrand,values.cutoffDate,values.payDate,values.limit,authContext.token).then(response => {
             console.log(response);      
         }).catch(error => {
             console.log(error);
@@ -118,7 +124,7 @@ export const NewAccount = () => {
 
   return (
     <Card className='card' sx={{overflow: 'auto'}}>
-        <CardHeader className='card-title' title="Agregar Cuenta" sx={{backgroundColor: '#ECEFF1'}} />
+        <CardHeader className='card-title' title={props.data._id !== undefined ? "Editar Cuenta" : "Agregar Cuenta"} sx={{backgroundColor: '#ECEFF1'}} />
         <CardContent>
             <Grid container spacing={3} sx={{marginY: '20px'}} alignItems="center" justifyContent="space-between">
                 <Grid item xs={12} sm={6}>
@@ -128,6 +134,7 @@ export const NewAccount = () => {
                         </Grid>
                         <Grid item xs={10}>
                             <TextField fullWidth variant='outlined' color='primary' label="Alias"
+                            defaultValue={props.data.alias}
                             error={!!errors['alias']}
                             helperText={errors['alias'] ? errors['alias'].message : ''}
                             {...register("alias")} />
@@ -191,6 +198,7 @@ export const NewAccount = () => {
                         </Grid>
                         <Grid item xs={10}>
                             <TextField type="number" fullWidth variant='outlined' color='primary' label="Ultimos 4 Digitos" 
+                            defaultValue={props.data.last4Digits}
                             error={!!errors['last4Digits']}
                             helperText={errors['last4Digits'] ? errors['last4Digits'].message : ''}
                             {...register("last4Digits")}/>
@@ -214,9 +222,9 @@ export const NewAccount = () => {
                                     {...register("cardBrand")}
                                     onChange={(e) => setCardData({...cardData , cardBrand:e.target.value})}
                                 >
-                                    <MenuItem value="Visa">Visa</MenuItem>
-                                    <MenuItem value="MasterCard">MasterCard</MenuItem>
-                                    <MenuItem value="AMEX">AMEX</MenuItem>
+                                    <MenuItem value="visa">Visa</MenuItem>
+                                    <MenuItem value="mastercard">MasterCard</MenuItem>
+                                    <MenuItem value="amex">AMEX</MenuItem>
                                 </Select>
                                 <FormHelperText>{errors['cardBrand'] ? errors['cardBrand'].message : ''}</FormHelperText>
                             </FormControl>
@@ -232,6 +240,7 @@ export const NewAccount = () => {
                         </Grid>
                         <Grid item xs={10}>
                             <TextField type="number" InputLabelProps={{ shrink: true }} fullWidth variant='outlined' color='primary' label="Fecha de Corte"
+                            defaultValue={props.data.cutoffDate}
                             error={!!errors['cutoffDate']}
                             helperText={errors['cutoffDate'] ? errors['cutoffDate'].message : ''}
                             {...register("cutoffDate")} />
@@ -245,6 +254,7 @@ export const NewAccount = () => {
                         </Grid>
                         <Grid item xs={10}>
                             <TextField type="number" InputLabelProps={{ shrink: true }} fullWidth variant='outlined' color='primary' label="Fecha de Pago"
+                            defaultValue={props.data.payDate}
                             error={!!errors['payDate']}
                             helperText={errors['payDate'] ? errors['payDate'].message : ''}
                             {...register("payDate")} />
@@ -258,6 +268,7 @@ export const NewAccount = () => {
                         </Grid>
                         <Grid item xs={10}>
                             <TextField type="number" fullWidth variant='outlined' color='primary' label="Límite de Gasto"
+                            defaultValue={props.data.limit}
                             error={!!errors['limit']}
                             helperText={errors['limit'] ? errors['limit'].message : ''}
                             {...register("limit")} />
@@ -271,7 +282,11 @@ export const NewAccount = () => {
         <CardActions sx={{padding: '16px', backgroundColor: '#ECEFF1'}}>
             <Grid container spacing={2} alignItems="center" justifyContent='flex-end'>
                 <Grid item>
-                    <Button variant='contained' color='primary' onClick={handleSubmit(handleInsAcc)}>Agregar</Button>
+                    {props.data._id !== undefined ?
+                        <Button variant='contained' color='secondary' onClick={handleSubmit(handleInsAcc)}>Editar</Button>
+                    :
+                        <Button variant='contained' color='primary' onClick={handleSubmit(handleInsAcc)}>Agregar</Button>
+                    }
                 </Grid>
             </Grid>
         </CardActions>

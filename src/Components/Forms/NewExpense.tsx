@@ -15,6 +15,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { insExpense } from '../../api/setApiCalls';
 //Auth
 import { AuthContext } from '../../utils/auth';
+//date
+import moment from "moment";
 
 export const NewExpense = (props:any) => {
     const theme = useTheme();
@@ -29,6 +31,13 @@ export const NewExpense = (props:any) => {
 
     const Tags = ['Super','Compras','Casa','Comida','Otros'];
     const Types = ['Variable', 'Fijo'];
+
+    useEffect(() => {
+      if(props.data !== undefined) {
+        setExpData({expType: props.data.type, expCat: props.data.category})
+      }
+    }, [props.data])
+    
 
     const expenseSchema = object({
         title: string()
@@ -79,7 +88,7 @@ export const NewExpense = (props:any) => {
     
         //function to handle the submit if the validations where successfull  
     const handleInsExp: SubmitHandler<expinput> = (values) => {
-        insExpense(values.title,values.account,values.date,values.amount,values.category,values.type,values.comments,values.expAuto,props.selectedAcc.cardId,authContext.token).then(response => {
+        insExpense(props.data.id,values.title,values.account,values.date,values.amount,values.category,values.type,values.comments,values.expAuto,props.selectedAcc.cardId,authContext.token).then(response => {
             console.log(response);
         }).catch(error => {
             console.log(error);
@@ -95,7 +104,7 @@ export const NewExpense = (props:any) => {
     }
   return (
     <Card className='card' sx={{overflow: 'auto'}} >
-        <CardHeader className='card-title' title="Agregar Gasto" sx={{backgroundColor: '#ECEFF1'}} />
+        <CardHeader className='card-title' title={props.data.id !== undefined ? "Editar Gasto" : "Agregar Gasto"} sx={{backgroundColor: '#ECEFF1'}} />
         <CardContent>
             <Grid container spacing={3} sx={{marginY: '20px'}} alignItems="center" justifyContent="space-between">
                 <Grid item xs={12} sm={6}>
@@ -105,6 +114,7 @@ export const NewExpense = (props:any) => {
                         </Grid>
                         <Grid item xs={10}>
                             <TextField fullWidth multiline minRows={1} variant='outlined' color='primary' label="Descripción" 
+                            defaultValue={props.data.title}
                             error={!!errors['title']}
                             helperText={errors['title'] ? errors['title'].message : ''}
                             {...register("title")}/>
@@ -134,7 +144,8 @@ export const NewExpense = (props:any) => {
                             <EventIcon sx={{color:theme.palette.primary.main}} fontSize='medium' />
                         </Grid>
                         <Grid item xs={10}>
-                            <TextField type="date" InputLabelProps={{ shrink: true }} fullWidth variant='outlined' color='primary' label={expData.expType === 'Fijo' ? 'Fecha Cobro' : 'Fecha Gasto'} 
+                            <TextField type="date" InputLabelProps={{ shrink: true }} fullWidth variant='outlined' color='primary' label={expData.expType === 'Fijo' ? 'Fecha Cobro' : 'Fecha Gasto'}
+                            defaultValue={moment(props.data.date,'DD/MM/YYYY').format('YYYY-MM-DD')}
                             error={!!errors['date']}
                             helperText={errors['date'] ? errors['date'].message : ''}
                             {...register("date")}/>
@@ -148,6 +159,7 @@ export const NewExpense = (props:any) => {
                         </Grid>
                         <Grid item xs={10}>
                             <TextField type="number" InputLabelProps={{ shrink: true }} fullWidth variant='outlined' color='primary' label="Monto" 
+                            defaultValue={props.data.amount}
                             error={!!errors['amount']}
                             helperText={errors['amount'] ? errors['amount'].message : ''}
                             {...register("amount")}/>
@@ -220,6 +232,7 @@ export const NewExpense = (props:any) => {
                         </Grid>
                         <Grid item xs={10}>
                             <TextField fullWidth multiline minRows={2} variant='outlined' color='primary' label="Observaciones" 
+                            defaultValue={props.data.comments}
                             error={!!errors['comments']}
                             helperText={errors['comments'] ? errors['comments'].message : ''}
                             {...register("comments")}/>
@@ -241,7 +254,11 @@ export const NewExpense = (props:any) => {
         <CardActions sx={{padding: '16px', backgroundColor: '#ECEFF1'}}>
             <Grid container spacing={2} alignItems="center" justifyContent='flex-end'>
                 <Grid item>
-                    <Button variant='contained' color='primary' onClick={handleSubmit(handleInsExp)}>Agregar</Button>
+                    {props.data.id !== undefined ?
+                        <Button variant='contained' color='secondary' onClick={handleSubmit(handleInsExp)}>Editar</Button>
+                    :
+                        <Button variant='contained' color='primary' onClick={handleSubmit(handleInsExp)}>Agregar</Button>
+                    }   
                 </Grid>
             </Grid>
         </CardActions>

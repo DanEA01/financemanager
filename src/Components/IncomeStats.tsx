@@ -114,8 +114,6 @@ export const IncomeStats = (props:any) => {
                 show: data !== undefined ? true : false,
             }
         }));
-
-        console.log(chartsSet);
         
     }
 
@@ -271,7 +269,7 @@ export const IncomeStats = (props:any) => {
                                         {statsData.incomesStatsByMonth !== undefined ?
                                         Object.keys(statsData.incomesStatsByMonth).map((key, index) => {
                                             return (
-                                            <ListItem className='expenses-li' sx={{backgroundColor: 'white'}}>
+                                            <ListItem className='expenses-li' sx={{backgroundColor: 'white'}} key={"income"+index}>
                                                 <ListItemAvatar>
                                                 <Avatar sx={{backgroundColor: generateRandomColor()}}>
                                                     <MonetizationOnOutlinedIcon />

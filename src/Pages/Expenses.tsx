@@ -22,7 +22,7 @@ export const Expenses = (props:any) => {
   const [openBackdrop, setopenBackdrop] = useState(false);
   const [choosenForm, setChoosenForm] = useState<any>(null);
   const [IncomeTabsIndex, setIncomeTabsIndex] = useState(0);
-  const [accounts, setAccounts] = useState(null);
+  const [accounts, setAccounts] = useState<any>(null);
   const [expenses, setExpenses] = useState('');
   const [expensesStats, setExpensesStats] = useState(null);
   const [selectedCard, setSelectedCard] = useState({
@@ -71,7 +71,7 @@ export const Expenses = (props:any) => {
   }, [filter])
 
   const addAccountDialog = () => {
-    setChoosenForm(<NewAccount />);
+    setChoosenForm(<NewAccount data="" id=""/>);
     setopenDialog(true);
   }
 
@@ -80,7 +80,7 @@ export const Expenses = (props:any) => {
   };
 
   const addExpenseDialog = () => {
-    setChoosenForm(<NewExpense selectedAcc={selectedCard}/>);
+    setChoosenForm(<NewExpense selectedAcc={selectedCard} data=""/>);
     setopenDialog(true);
   }
 
@@ -97,6 +97,17 @@ export const Expenses = (props:any) => {
 
   const handleFilterChange = (filter:string) => {
     setFilter(filter);
+  }
+
+  const handleEditAccount = (id:string) => {
+    const account = accounts.filter((acc:any) => acc._id === id);
+    setChoosenForm(<NewAccount data={account[0]} id={account[0]._id}/>);
+    setopenDialog(true);
+  }
+
+  const handleRowClick = (data:object) => {
+    setChoosenForm(<NewExpense selectedAcc={selectedCard} data={data}/>);
+    setopenDialog(true);
   }
 
   return (
@@ -118,12 +129,12 @@ export const Expenses = (props:any) => {
             marginLeft: '0px',
             overflowX: 'hidden'}}>
             <IncomeTabs tabIndex={IncomeTabsIndex} handleIndexChange={SetIndexChange}/>
-            <Accounts handleAddAccount={addAccountDialog} cards={accounts} selectedAccountID={handleSelectedAccountID}/>
+            <Accounts handleAddAccount={addAccountDialog} cards={accounts} selectedAccountID={handleSelectedAccountID} editAccount={handleEditAccount}/>
             <Filter value={filter} filterChange={handleFilterChange}/>
             {IncomeTabsIndex === 0 ?
               <ExpensesStats data={expensesStats} filter={filter}/>
             : 
-              <ExpensesTable handleAddExpense={addExpenseDialog} data={expenses}/>
+              <ExpensesTable handleAddExpense={addExpenseDialog} data={expenses} rowClick={handleRowClick}/>
             }
           </Box>
       </Box>

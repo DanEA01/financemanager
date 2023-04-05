@@ -23,7 +23,7 @@ export const Income = (props:any) => {
   const [openBackdrop, setopenBackdrop] = useState(false);
   const [choosenForm, setChoosenForm] = useState<any>(null);
   const [IncomeTabsIndex, setIncomeTabsIndex] = useState(0);
-  const [accounts, setAccounts] = useState(null);
+  const [accounts, setAccounts] = useState<any>(null);
   const [incomes, setIncomes] = useState('');
   const [incomesStats, setIncomesStats] = useState(null);
   const [filter, setFilter] = useState('thisMonth');
@@ -72,7 +72,7 @@ export const Income = (props:any) => {
   }, [filter])
 
   const addAccountDialog = () => {
-    setChoosenForm(<NewAccount />);
+    setChoosenForm(<NewAccount data="" id=""/>);
     setopenDialog(true);
   }
 
@@ -81,7 +81,7 @@ export const Income = (props:any) => {
   };
 
   const addIncomeDialog = () => {
-    setChoosenForm(<NewIncome selectedAcc={selectedCard}/>);
+    setChoosenForm(<NewIncome selectedAcc={selectedCard} data=""/>);
     setopenDialog(true);
   }
 
@@ -97,6 +97,19 @@ export const Income = (props:any) => {
 
   const handleFilterChange = (filter:string) => {
     setFilter(filter);
+  }
+
+  const handleEditAccount = (id:string) => {
+    const account = accounts.filter((acc:any) => acc._id === id);
+    setChoosenForm(<NewAccount data={account[0]} id={account[0]._id}/>);
+    setopenDialog(true);
+  }
+
+  const handleRowClick = (data:object) => {
+    console.log(data);
+    
+    setChoosenForm(<NewIncome selectedAcc={selectedCard} data={data}/>);
+    setopenDialog(true);
   }
 
     return (
@@ -118,12 +131,12 @@ export const Income = (props:any) => {
                 marginLeft: '0px',
                 overflowX: 'hidden'}}>
                 <IncomeTabs tabIndex={IncomeTabsIndex} handleIndexChange={SetIndexChange}/>
-                <Accounts handleAddAccount={addAccountDialog} cards={accounts} selectedAccountID={handleSelectedAccountID}/>
+                <Accounts handleAddAccount={addAccountDialog} cards={accounts} selectedAccountID={handleSelectedAccountID} editAccount={handleEditAccount}/>
                 <Filter value={filter} filterChange={handleFilterChange}/>
                 {IncomeTabsIndex === 0 ?
                   <IncomeStats data={incomesStats} filter={filter} />
                 : 
-                  <IncomeTable handleAddIncome={addIncomeDialog} data={incomes}/>
+                  <IncomeTable handleAddIncome={addIncomeDialog} data={incomes} rowClick={handleRowClick}/>
                 }
               </Box>
           </Box>

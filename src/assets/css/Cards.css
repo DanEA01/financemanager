@@ -54,6 +54,15 @@
     
 }
 
+.card .edit-card{
+    display: none;
+}
+
+.card:hover .edit-card{
+    display: block;
+}
+
+
 .--unknown {
     background: var(--rccs-unknown-background);
     box-shadow: none;
