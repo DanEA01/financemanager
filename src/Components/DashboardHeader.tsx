@@ -11,7 +11,13 @@ import '../assets/css/Main.css'
 import { Stack } from '@mui/system';
 
 
-export const DashboardHeader = () => {
+export const DashboardHeader = (props:any) => {
+
+    const numberToCurrency = (num:any) => {
+        const formatter = new Intl.NumberFormat('es-MX');
+        return '$ '+formatter.format(num);
+    }
+
   return (
     <Grid container spacing={3}>
         <Grid item direction="row" xs={12}>
@@ -26,7 +32,7 @@ export const DashboardHeader = () => {
                                     <LocalAtmIcon />
                                 </Avatar>
                                 <Stack direction="row" spacing={1} alignItems="center" alignContent="center">
-                                    <Typography color="white" className='card-amount'>$25,000</Typography>
+                                    <Typography color="white" className='card-amount'>{numberToCurrency(props.incomeSum)}</Typography>
                                     <Avatar sx={{backgroundColor:'#abd2ce', width: 24, height: 24 }}>
                                         <TrendingUpIcon sx={{fontSize: '1.1rem', color:'#009688'}}/>
                                     </Avatar>
@@ -46,7 +52,7 @@ export const DashboardHeader = () => {
                                     <ShoppingBagOutlinedIcon />
                                 </Avatar>
                                 <Stack direction="row" spacing={1} alignItems="center" alignContent="center">
-                                    <Typography color="white" className='card-amount'>$25,000</Typography>
+                                    <Typography color="white" className='card-amount'>{numberToCurrency(props.expensesSum)}</Typography>
                                     <Avatar sx={{backgroundColor:'#f7b6b5', width: 24, height: 24 }}>
                                         <TrendingDownIcon sx={{fontSize: '1.1rem', color:'#E53935'}}/>
                                     </Avatar>
@@ -66,7 +72,7 @@ export const DashboardHeader = () => {
                                     <SavingsOutlinedIcon />
                                 </Avatar>
                                 <Stack direction="row" spacing={1} alignItems="center" alignContent="center">
-                                    <Typography color="white" className='card-amount'>$25,000</Typography>
+                                    <Typography color="white" className='card-amount'>{numberToCurrency(props.balance)}</Typography>
                                     <Avatar sx={{backgroundColor:'#a9b1e2', width: 24, height: 24 }}>
                                         <TrendingDownIcon sx={{fontSize: '1.1rem', color:'#3F51B5'}}/>
                                     </Avatar>

@@ -1,6 +1,6 @@
 import { Avatar, Box, Card, CardContent, Divider, Grid, List, ListItem, ListItemAvatar, ListItemText, Typography } from '@mui/material'
 import { Stack } from '@mui/system';
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 //Charts
 import Chart from "react-apexcharts";
 //Icons
@@ -9,156 +9,143 @@ import ShoppingBagOutlinedIcon from '@mui/icons-material/ShoppingBagOutlined';
 import SavingsOutlinedIcon from '@mui/icons-material/SavingsOutlined';
 import LocalOfferOutlinedIcon from '@mui/icons-material/LocalOfferOutlined';
 
-export const DashboardBody = () => {
-
+export const DashboardBody = (props:any) => {
+    const [statsData, setStatsData] = useState<any>('');
+    const [expensesData, setExpensesData] = useState<any>('');
     const [overallDataDisplay, setoverallDataDisplay] = useState({
         ingresos: 0,
         gastos: 0,
-        ahorros: 0,
         balance: 0
     })
-    const [graphs, setgraphs] = useState<any>(
-        { 
-            overallReport: {
-            options:{
-                chart: {
-                    events: {
-                        dataPointSelection: function(event:any, chartContext:any, config:any) {
-                            setoverallDataDisplay({...overallDataDisplay, ingresos: config.w.config.series[0].data[config.dataPointIndex], gastos:config.w.config.series[1].data[config.dataPointIndex], balance: (config.w.config.series[0].data[config.dataPointIndex] - config.w.config.series[1].data[config.dataPointIndex])})
-                        }
-                    }
-                  },
-                dataLabels: {
-                    enabled: false,
-                },
-                plotOptions: {
-                    bar: {
-                      horizontal: false,
-                      borderRadius: 5,
-                    },
-                },
-                xaxis: {
-                    categories: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio"]
-                },
-                colors: ['#4DB6AC', '#C62828', '#7986CB'],
-            },
+    const [chartsSet, setChartsSet] = useState<any>({
+        yearReport: {
             series:[
                 {
-                    name: 'Ingresos',
-                    data: [9500, 10500, 9800, 9500, 9750, 9800, 9600]
+                    name: "Ingresos",
+                    data: [0]
                 },
                 {
-                    name: 'Gastos',
-                    data: [8000, 9500, 7500, 7000, 10500, 7000, 6850]
+                    name: "Gastos",
+                    data: [0]
                 },
-            ]
-            },
-            balanceReport:{
-                series: [{
-                    name: "Balance",
-                    data: [1500, -200, 350, 400, 2500, 1000, -250]
-                }],
-                options: {
-                  chart: {
-                    events: {
-                        markerClick: function(event:any, chartContext:any, config:any) {
-                            setoverallDataDisplay({...overallDataDisplay, balance: config.w.config.series[config.seriesIndex].data[config.dataPointIndex] });
-                        }
-                      }
-                  },
-                  stroke: {
-                    width: 5,
-                    curve: 'smooth'
-                  },
-                  colors: ['#FFFFFF'],
-                  grid: {
-                    show: false,
-                  },
-                  xaxis: {
-                    show: false,
-                    categories: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio"],
-                    labels: {
-                      show: false
-                    },
-                    axisBorder: {
-                      show: false
-                    },
-                    axisTicks: {
-                      show: false
-                    },
-                  },
-                  yaxis: {
-                    show: false,
-                    labels: {
-                      show: false
-                    },
-                    axisBorder: {
-                      show: false
-                    },
-                    axisTicks: {
-                      show: false
-                    }
-                  },
-                },
-            },
-            incomeVsExpenses:{
-                options: {
-                    chart: {
-                      type: 'area'
-                    },
-                    dataLabels: {
-                      enabled: false
-                    },
-                    stroke: {
-                      curve: 'smooth'
-                    },
-                    grid: {
-                      show: false,
-                    },
-                    colors: ['#90CAF9', '#E1BEE7'],
-                    xaxis: {
-                        show: false,
-                        categories: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio"],
-                        labels: {
-                          show: false
-                        },
-                        axisBorder: {
-                          show: false
-                        },
-                        axisTicks: {
-                          show: false
-                        },
-                    },
-                    yaxis: {
-                        show: false,
-                        labels: {
-                          show: false
-                        },
-                        axisBorder: {
-                          show: false
-                        },
-                        axisTicks: {
-                          show: false
-                        }
-                    },
-                },
-                series: [
-                    {
-                        name: "Gastos",
-                        data: [15000, 17000, 20000, 14000, 13500, 9800, 16540]
-                    },
-                    {
-                        name: "Limite Gastos",
-                        data: [14000, 14000, 14000, 14000, 14000, 14000, 14000]
-                    }
-                ],
-            }
+            ],
+            labels: [''],
+        },
+    });
+    const months = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre']    
+
+    useEffect(() => {
+        if(props.data !== null){
+            setStatsData(props.data)
         }
-    )
+    }, [props.data])
+
+    useEffect(() => {
+        if(props.topExpenses !== null){
+            setExpensesData(props.topExpenses)
+        }
+    }, [props.topExpenses])
+
+    useEffect(() => {
+        if(statsData !== ''){
+            setYearReportStats(statsData);
+        }
+    }, [statsData])
+
+    const setYearReportStats = (data:any) => {
+        let income:any = [];
+        let expense:any = [];
+        let labels:any = [];
+        let labels2:any = [];
+        let labelMonths:any = [];
+        
+        if(data !== undefined){
+            let lastKeyIncome:any = data.incomes.incomeByMonth !== undefined ? Object.keys(data.incomes.incomeByMonth).pop() : -1;
+            let firstKeyIncome:any = data.incomes.incomeByMonth !== undefined ? Object.keys(data.incomes.incomeByMonth)[0] : 100;
+            let lastKeyExpense:any = data.expenses.expensesByMonth !== undefined ? Object.keys(data.expenses.expensesByMonth).pop() : -1;
+            let firstKeyExpense:any = data.expenses.expensesByMonth !== undefined ? Object.keys(data.expenses.expensesByMonth)[0] : 100;
+            let firstKey = firstKeyIncome <= firstKeyExpense ? firstKeyIncome : firstKeyExpense;
+            let lastKey = lastKeyIncome >= lastKeyExpense ? lastKeyIncome : lastKeyExpense;
+            
+            for(let i=firstKey;i<=lastKey;i++){
+                data.incomes.incomeByMonth !== undefined ? data.incomes.incomeByMonth[i] !== undefined  ? income.push(data.incomes.incomeByMonth[i]) : income.push(0) : income.push(0);
+                data.expenses.expensesByMonth !== undefined  ? data.expenses.expensesByMonth[i] !== undefined ? expense.push(data.expenses.expensesByMonth[i]) : expense.push(0) : expense.push(0);
+            }
+            
+            
+            if(data.incomes.incomeByMonth !== undefined){
+                //get the sum of expenses Fijo and the month labels
+                Object.keys(data.incomes.incomeByMonth).map((key:any) => {
+                    labels.push(key);
+                })
+            }
+            if(data.expenses.expensesByMonth !== undefined){
+                //get the sum of expenses Variable and the month labels
+                Object.keys(data.expenses.expensesByMonth).map((key:any) => {
+                    labels2.push(key);
+                })
+            }
+            /* //Combine the 2 labels and remove duplicates
+            this will create an array of the months the expenses took place */
+            labels = labels.concat(labels2.filter((item:any) => labels.indexOf(item) < 0));
+            labels.sort();
+            labelMonths = labels.map((label:any) => {
+                return(months[label])
+            })
+            
+        }
+
+            setChartsSet((prevChartSet:any) => ({
+                ...prevChartSet,
+                yearReport: {
+                    ...prevChartSet.yearReport,
+                    series:[
+                        {
+                            name: "Ingresos",
+                            data: income
+                        },
+                        {
+                            name: "Gastos",
+                            data: expense
+                        },
+                    ],
+                    labels:labelMonths,
+                }
+            }));
+    }
+    
+    const yearReport: any = {
+        chart: {
+            events: {
+                dataPointSelection: function(event:any, chartContext:any, config:any) {
+                    props.barClick(months.indexOf(config.w.config.xaxis.categories[config.dataPointIndex]));
+                    setoverallDataDisplay({...overallDataDisplay, ingresos: config.w.config.series[0].data[config.dataPointIndex], gastos:config.w.config.series[1].data[config.dataPointIndex], balance: (config.w.config.series[0].data[config.dataPointIndex] - config.w.config.series[1].data[config.dataPointIndex])})
+                }
+            }
+        },
+        dataLabels: {
+            enabled: false,
+        },
+        plotOptions: {
+        },
+        grid: {
+            show: false,
+        },
+        xaxis: {
+            categories: chartsSet.yearReport.labels
+        },
+        colors: ['#4DB6AC', '#C62828', '#7986CB'],
+    }
 
     const generateRandomColor = () => {
         return '#'+Math.floor(Math.random()*16777215).toString(16)
     }
+
+    const numberToCurrency = (num:any) => {
+        const formatter = new Intl.NumberFormat('es-MX');
+        return '$ '+formatter.format(num);
+    }
+
 
   return (
     <Grid container spacing={3} sx={{marginY: '20px'}}>
@@ -189,7 +176,7 @@ export const DashboardBody = () => {
                                                         </Avatar>
                                                     </Grid>
                                                     <Grid item>
-                                                        <Typography color="white" className='card-title'>${overallDataDisplay.ingresos}</Typography>
+                                                        <Typography color="white" className='card-title'>{numberToCurrency(overallDataDisplay.ingresos)}</Typography>
                                                         <Typography color="white" className='card-subtitle'>Ingresos</Typography>
                                                     </Grid>
                                                 </Grid>
@@ -202,7 +189,7 @@ export const DashboardBody = () => {
                                                         </Avatar>
                                                     </Grid>
                                                     <Grid item>
-                                                        <Typography color="white" className='card-title'>${overallDataDisplay.gastos}</Typography>
+                                                        <Typography color="white" className='card-title'>{numberToCurrency(overallDataDisplay.gastos)}</Typography>
                                                         <Typography color="white" className='card-subtitle'>Gastos</Typography>
                                                     </Grid>
                                                 </Grid>
@@ -215,7 +202,7 @@ export const DashboardBody = () => {
                                                         </Avatar>
                                                     </Grid>
                                                     <Grid item>
-                                                        <Typography color="white" className='card-title'>${overallDataDisplay.balance}</Typography>
+                                                        <Typography color="white" className='card-title'>{numberToCurrency(overallDataDisplay.balance)}</Typography>
                                                         <Typography color="white" className='card-subtitle'>Balance</Typography>
                                                     </Grid>
                                                 </Grid>
@@ -224,8 +211,8 @@ export const DashboardBody = () => {
                                     </Grid>
                                     <Grid item xs={12}>
                                         <Chart
-                                            options={graphs.overallReport.options}
-                                            series={graphs.overallReport.series}
+                                            options={yearReport}
+                                            series={chartsSet.yearReport.series}
                                             type="bar"
                                         />
                                     </Grid>
@@ -244,46 +231,19 @@ export const DashboardBody = () => {
                                     </Grid>
                                     <Grid item xs={12}>
                                     <List sx={{ width: '100%'}}>
+                                    {expensesData !== undefined ?
+                                    Object.keys(expensesData).map((key, index) => {
+                                        return (
                                         <ListItem className='expenses-li' sx={{backgroundColor: 'white'}}>
                                             <ListItemAvatar>
                                             <Avatar sx={{backgroundColor: generateRandomColor()}}>
                                                 <LocalOfferOutlinedIcon />
                                             </Avatar>
                                             </ListItemAvatar>
-                                            <ListItemText primary="Super" secondary="$5,500"/>
+                                            <ListItemText primary={key} secondary={numberToCurrency(expensesData[key])}/>
                                         </ListItem>
-                                        <ListItem className='expenses-li' sx={{backgroundColor: 'white'}}>
-                                            <ListItemAvatar>
-                                            <Avatar sx={{backgroundColor: generateRandomColor()}}>
-                                                <LocalOfferOutlinedIcon />
-                                            </Avatar>
-                                            </ListItemAvatar>
-                                            <ListItemText primary="Compras" secondary="$4,300" />
-                                        </ListItem>
-                                        <ListItem className='expenses-li' sx={{backgroundColor: 'white'}}>
-                                            <ListItemAvatar>
-                                            <Avatar sx={{backgroundColor: generateRandomColor()}}>
-                                                <LocalOfferOutlinedIcon />
-                                            </Avatar>
-                                            </ListItemAvatar>
-                                            <ListItemText primary="Casa" secondary="$2,000" />
-                                        </ListItem>
-                                        <ListItem className='expenses-li' sx={{backgroundColor: 'white'}}>
-                                            <ListItemAvatar>
-                                            <Avatar sx={{backgroundColor: generateRandomColor()}}>
-                                                <LocalOfferOutlinedIcon />
-                                            </Avatar>
-                                            </ListItemAvatar>
-                                            <ListItemText primary="Comida" secondary="$1,950" />
-                                        </ListItem>
-                                        <ListItem className='expenses-li' sx={{backgroundColor: 'white'}}>
-                                            <ListItemAvatar>
-                                            <Avatar sx={{backgroundColor: generateRandomColor()}}>
-                                                <LocalOfferOutlinedIcon />
-                                            </Avatar>
-                                            </ListItemAvatar>
-                                            <ListItemText primary="Otros" secondary="$1,500" />
-                                        </ListItem>
+                                        );
+                                    }) :null}
                                     </List>
                                     </Grid>
                                 </Grid>

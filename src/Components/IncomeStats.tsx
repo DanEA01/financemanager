@@ -62,7 +62,6 @@ export const IncomeStats = (props:any) => {
         let labels2:any = [];
 
         if(data !== undefined){
-            console.log(data);
             let lastKeyFijo:any = data.Fijo !== undefined ? Object.keys(data.Fijo).pop() : -1;
             let firstKeyFijo:any = data.Fijo !== undefined ? Object.keys(data.Fijo)[0] : 100;
             let lastKeyVariable:any = data.Variable !== undefined ? Object.keys(data.Variable).pop() : -1;
