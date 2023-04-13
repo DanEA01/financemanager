@@ -16,6 +16,10 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 //Router
 import { useNavigate } from 'react-router-dom';
 import { height } from '@mui/system';
+//auth
+import { AuthContext } from '../utils/auth';
+//API
+import { setLogout } from '../api/setApiCalls';
 
 const drawerWidth = 240;
 
@@ -102,6 +106,7 @@ const Drawer = styled(MuiDrawer, {
 
 export const Sidebar = (props:any) => {
     const theme = useTheme();
+    const [authContext, setAuthContext] = useContext<any>(AuthContext);  
     const [open, setOpen] = useState(false);
     const navigate = useNavigate();
     const [anchorEl, setanchorEl] = useState<null | HTMLElement>(null);
@@ -161,6 +166,15 @@ export const Sidebar = (props:any) => {
         };
       }
 
+      const handleLogout = () =>{
+        setLogout(authContext.token).then( (response) => {
+          navigate('/login');
+        })
+        .catch((error) => {
+          console.log(error);
+        })
+      }
+
   return (
     <>
     <AppBar position="fixed" color="inherit" open={open}>
@@ -215,7 +229,7 @@ export const Sidebar = (props:any) => {
                         Mi Cuenta
                     </MenuItem>
                     <Divider variant="middle" />
-                    <MenuItem>
+                    <MenuItem onClick={handleLogout}>
                         <ListItemIcon>
                             <LogoutIcon />
                         </ListItemIcon>

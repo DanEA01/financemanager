@@ -69,9 +69,9 @@ export const Login = () => {
     const handleLogIn: SubmitHandler<loginput> = (values) => {
         setopenBackdrop(true);
         setLogIn(values.username,values.password).then(response => {
-            setAuthContext((oldValues: any) => {
+            /* setAuthContext((oldValues: any) => {
                 return { ...oldValues, token: response.data.token, username: response.data.name, email: response.data.email}
-            })
+            }) */
             setopenBackdrop(false);
             navigate('/FinanceManager');
         }).catch(error => {
@@ -84,15 +84,15 @@ export const Login = () => {
         })
     }
 
+    const showPasswordHandle = () => {
+        setshowPassword(!showPassword)
+    }
+
     //close Alert Dialog automatically
     const isOpen = openAlert.open === true;
     useEffect(() => {
         if(isOpen) setTimeout(() => setOpenAlert({...openAlert , open:false}), 5000);
     }, [isOpen])
-
-    const showPasswordHandle = () => {
-        setshowPassword(!showPassword)
-    }
 
     const handleAlertClose = () => {
         setOpenAlert({...openAlert , open:false});
@@ -131,8 +131,8 @@ export const Login = () => {
                                 </Grid>
                                 <Grid item>
                                     <Stack direction='row' spacing={2}>
-                                        <Button variant='outlined' startIcon={<GoogleIcon sx={{color:'#db3236'}}/>} fullWidth sx={{textTransform:'none',borderColor:grey[500],color:grey[800]}} >Google</Button>
-                                        <Button variant='outlined' startIcon={<FacebookIcon sx={{color:'#4267B2'}} />} color='primary' fullWidth sx={{textTransform:'none',borderColor:grey[500],color:grey[800]}}>Facebook</Button>
+                                        <Button onClick={() => window.location.href = "http://localhost:4000/auth/google/financemanager"} variant='outlined' startIcon={<GoogleIcon sx={{color:'#db3236'}}/>} fullWidth sx={{textTransform:'none',borderColor:grey[500],color:grey[800]}} >Google</Button>
+                                        <Button disabled onClick={() => window.location.href = "http://localhost:4000/auth/facebook/financemanager"} variant='outlined' startIcon={<FacebookIcon sx={{color:'#4267B2'}} />} color='primary' fullWidth sx={{textTransform:'none',borderColor:grey[500],color:grey[800]}}>Facebook</Button>
                                     </Stack>
                                 </Grid>
                             </Grid>

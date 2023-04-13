@@ -198,13 +198,17 @@ export const ExpensesStats = (props:any) => {
         const expensesVariable:any = [];
 
         if(data !== undefined){
-            Object.keys(data.Fijo).map((key:any) => {
-                expensesFijo.push({x:key,y:data.Fijo[key]})
-            })
+            if(data.Fijo !== undefined){
+                Object.keys(data.Fijo).map((key:any) => {
+                    expensesFijo.push({x:key,y:data.Fijo[key]})
+                })
+            }
 
-            Object.keys(data.Variable).map((key:any) => {
-                expensesVariable.push({x:key,y:data.Variable[key]})
-            })
+            if(data.Variable !== undefined){
+                Object.keys(data.Variable).map((key:any) => {
+                    expensesVariable.push({x:key,y:data.Variable[key]})
+                })
+            }
         }
 
         setChartsSet((prevChartSet:any) => ({
@@ -366,6 +370,7 @@ export const ExpensesStats = (props:any) => {
 
   return (
     <Grid container spacing={3} sx={{marginY: '20px'}}>
+        {statsData !== '' ?
         <Grid item direction="row" xs={12}>
             <Grid container spacing={3}>
                 <Grid item xs={12} sm={12} md={6} lg={4}>
@@ -693,6 +698,7 @@ export const ExpensesStats = (props:any) => {
                 :null}
             </Grid>
         </Grid>
+        :null }
     </Grid>
   )
 }

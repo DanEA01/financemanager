@@ -17,6 +17,8 @@ import { insExpense } from '../../api/setApiCalls';
 import { AuthContext } from '../../utils/auth';
 //date
 import moment from "moment";
+//Alert
+import { FMAlert } from '../FMAlert';
 
 export const NewExpense = (props:any) => {
     const theme = useTheme();
@@ -28,12 +30,18 @@ export const NewExpense = (props:any) => {
             expAuto: false,
         }
     );
+    const [openAlert, setOpenAlert] = useState({
+        open:false,
+        title:'',
+        severity:'error',
+        message:''
+    });
 
     const Tags = ['Super','Compras','Casa','Comida','Otros'];
     const Types = ['Variable', 'Fijo'];
 
     useEffect(() => {
-      if(props.data !== undefined) {
+      if(props.data !== '') {
         setExpData({expType: props.data.type, expCat: props.data.category})
       }
     }, [props.data])
@@ -60,7 +68,7 @@ export const NewExpense = (props:any) => {
         type: string()
         .nonempty({ message: "Tipo requerido" }),
         comments: string(),
-        expAuto: z.boolean(),
+        expAuto: z.boolean().default(false),
     })
 
     //define a variable of the schema previously defined
@@ -89,10 +97,13 @@ export const NewExpense = (props:any) => {
         //function to handle the submit if the validations where successfull  
     const handleInsExp: SubmitHandler<expinput> = (values) => {
         insExpense(props.data.id,values.title,values.account,values.date,values.amount,values.category,values.type,values.comments,values.expAuto,props.selectedAcc.cardId,authContext.token).then(response => {
-            console.log(response);
+            const success = response.data.success;
+            setOpenAlert({open:true,title: success === true ? 'Exito' : 'Error',severity: success === true ? 'success' : 'error',message:response.data.msg});
+            props.onExpPost(success);
         }).catch(error => {
             console.log(error);
         })
+        
     }
 
     const gastoTypeColor = (value:string) => {
@@ -102,7 +113,19 @@ export const NewExpense = (props:any) => {
             return '#26A69A'
         }
     }
+
+    //close Alert Dialog automatically
+    const isOpen = openAlert.open === true;
+    useEffect(() => {
+      if(isOpen) setTimeout(() => setOpenAlert({...openAlert , open:false}), 5000);
+    }, [isOpen]) 
+
+    const handleAlertClose = () => {
+        setOpenAlert({...openAlert , open:false});
+    }
+
   return (
+    <>
     <Card className='card' sx={{overflow: 'auto'}} >
         <CardHeader className='card-title' title={props.data.id !== undefined ? "Editar Gasto" : "Agregar Gasto"} sx={{backgroundColor: '#ECEFF1'}} />
         <CardContent>
@@ -206,6 +229,7 @@ export const NewExpense = (props:any) => {
                                     id="demo-simple-select"
                                     label="Tipo"
                                     value={expData.expType}
+                                    defaultValue={'Variable'}
                                     error={!!errors['type']}
                                     {...register("type")}
                                     onChange={(e) => {
@@ -216,7 +240,7 @@ export const NewExpense = (props:any) => {
                                     }}
                                 >
                                     {Types.map(type => (
-                                    <MenuItem value={type}>
+                                    <MenuItem value={type} key={type}>
                                         <Chip label={type} variant="outlined" sx={{backgroundColor: gastoTypeColor(type), color:'white'}}/>
                                     </MenuItem>
                                     ))}
@@ -243,7 +267,7 @@ export const NewExpense = (props:any) => {
                 <Grid item xs={12}>
                     <FormControlLabel
                         control={
-                            <Switch checked={expData.expAuto} {...register("expAuto")} onChange={(e) => setExpData({...expData , expAuto:e.target.checked})} color='primary'/>
+                            <Switch defaultValue={expData.expAuto} checked={expData.expAuto} {...register("expAuto")} onChange={(e) => setExpData({...expData , expAuto:e.target.checked})} color='primary'/>
                         }
                         label="Agregar este gasto automaticamente cada mes?"
                     />
@@ -263,5 +287,7 @@ export const NewExpense = (props:any) => {
             </Grid>
         </CardActions>
     </Card>
+    <FMAlert open={openAlert.open} AlertClose={handleAlertClose} severity={openAlert.severity} title={openAlert.title} message={openAlert.message}/>
+    </>
   )
 }

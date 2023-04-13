@@ -46,6 +46,17 @@ export const setVerify = async () => {
     return result;
 }
 
+export const setLogout = async (token:String) => {
+    const result = await axios({
+        method: 'get',
+        withCredentials: true,
+        url: process.env.REACT_APP_API_ENDPOINT+ 'logout',
+        headers:{'Strict-Transport-Security': 'max-age=63072000','Content-Type': 'application/x-www-form-urlencoded','Access-Control-Allow-Credentials': 'true', 'Authorization' : 'Bearer '+token },
+    });
+
+    return result;
+}
+
 export const setAddAccount = async (id:string,alias:string,type:string,cardType:string,last4Digits:number,cardBrand:string,cutoffDate:number,payDate:number,limit:number,token:string) => {
     console.log(id);
     const result = await axios({

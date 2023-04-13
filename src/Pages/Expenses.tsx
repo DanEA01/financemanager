@@ -51,9 +51,11 @@ export const Expenses = (props:any) => {
       setopenBackdrop(true);
       getAccounts('Expense',authContext.token).then(response => {
         setAccounts(response.data.accounts)
-        if(response.data !== ''){
+        if(response.data.accounts.length > 0){
           setSelectedCard({...selectedCard, cardId: response.data.accounts[0]._id, cardNum:response.data.accounts[0].last4Digits})
           getExpensesAll(response.data.accounts[0]._id);
+          setopenBackdrop(false);
+        }else{
           setopenBackdrop(false);
         }
       }).catch(error => {
@@ -71,7 +73,7 @@ export const Expenses = (props:any) => {
   }, [filter])
 
   const addAccountDialog = () => {
-    setChoosenForm(<NewAccount data="" id=""/>);
+    setChoosenForm(<NewAccount data="" id="" onAccPost={handleAccPost}/>);
     setopenDialog(true);
   }
 
@@ -80,7 +82,7 @@ export const Expenses = (props:any) => {
   };
 
   const addExpenseDialog = () => {
-    setChoosenForm(<NewExpense selectedAcc={selectedCard} data=""/>);
+    setChoosenForm(<NewExpense selectedAcc={selectedCard} data="" onExpPost={handleExpPost}/>);
     setopenDialog(true);
   }
 
@@ -101,13 +103,33 @@ export const Expenses = (props:any) => {
 
   const handleEditAccount = (id:string) => {
     const account = accounts.filter((acc:any) => acc._id === id);
-    setChoosenForm(<NewAccount data={account[0]} id={account[0]._id}/>);
+    setChoosenForm(<NewAccount data={account[0]} id={account[0]._id} onAccPost={handleAccPost}/>);
     setopenDialog(true);
   }
 
   const handleRowClick = (data:object) => {
-    setChoosenForm(<NewExpense selectedAcc={selectedCard} data={data}/>);
+    setChoosenForm(<NewExpense selectedAcc={selectedCard} data={data} onExpPost={handleExpPost}/>);
     setopenDialog(true);
+  }
+
+  const handleExpPost = (success:any) => {
+    if(success === true){
+      getExpenses(selectedCard.cardId,filter,authContext.token).then(response => {
+        setExpenses(response.data.expenses);
+      }).catch(error => {
+        console.log(error);
+      })
+    }
+  }
+
+  const handleAccPost = (success:any) => {
+    if(success === true){
+      getAccounts('Expense',authContext.token).then(response => {
+        setAccounts(response.data.accounts)
+      }).catch(error => {
+        console.log(error);
+      })
+    }
   }
 
   return (

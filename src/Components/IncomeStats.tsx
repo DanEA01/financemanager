@@ -160,6 +160,7 @@ export const IncomeStats = (props:any) => {
 
   return (
     <Grid container spacing={3} sx={{marginY: '20px'}}>
+        {statsData !== '' ?
         <Grid item direction="row" xs={12}>
             <Grid container spacing={3}>
                 <Grid item xs={12} sm={12} md={6} lg={4}>
@@ -288,6 +289,7 @@ export const IncomeStats = (props:any) => {
                 </Grid>
             </Grid>
         </Grid>
+        : null}
     </Grid>
   )
 }

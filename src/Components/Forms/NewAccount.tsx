@@ -17,6 +17,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { setAddAccount } from '../../api/setApiCalls';
 //Auth
 import { AuthContext } from '../../utils/auth';
+//Alert
+import { FMAlert } from '../FMAlert';
 
 export const NewAccount = (props:any) => {
   const theme = useTheme();
@@ -29,6 +31,12 @@ export const NewAccount = (props:any) => {
         cardBrand: 'visa',
     }
   );
+  const [openAlert, setOpenAlert] = useState({
+    open:false,
+    title:'',
+    severity:'error',
+    message:''
+  });
 
   useEffect(() => {
     if(props.data._id !== undefined){
@@ -116,13 +124,27 @@ export const NewAccount = (props:any) => {
     //function to handle the submit if the validations where successfull  
     const handleInsAcc: SubmitHandler<accinput> = (values) => {
         setAddAccount(props.data._id,values.alias,values.type,values.cardType,values.last4Digits,values.cardBrand,values.cutoffDate,values.payDate,values.limit,authContext.token).then(response => {
-            console.log(response);      
+            const success = response.data.success;
+            setOpenAlert({open:true,title: success === true ? 'Exito' : 'Error',severity: success === true ? 'success' : 'error',message:response.data.msg});
+            props.onAccPost(success); 
         }).catch(error => {
             console.log(error);
         })
     }
 
+    //close Alert Dialog automatically
+    const isOpen = openAlert.open === true;
+    useEffect(() => {
+      if(isOpen) setTimeout(() => setOpenAlert({...openAlert , open:false}), 5000);
+    }, [isOpen]) 
+
+    const handleAlertClose = () => {
+        setOpenAlert({...openAlert , open:false});
+    }
+
+
   return (
+    <>
     <Card className='card' sx={{overflow: 'auto'}}>
         <CardHeader className='card-title' title={props.data._id !== undefined ? "Editar Cuenta" : "Agregar Cuenta"} sx={{backgroundColor: '#ECEFF1'}} />
         <CardContent>
@@ -291,5 +313,7 @@ export const NewAccount = (props:any) => {
             </Grid>
         </CardActions>
     </Card>
+    <FMAlert open={openAlert.open} AlertClose={handleAlertClose} severity={openAlert.severity} title={openAlert.title} message={openAlert.message}/>
+    </>
   )
 }

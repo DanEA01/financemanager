@@ -16,6 +16,8 @@ import SavingsOutlinedIcon from '@mui/icons-material/SavingsOutlined';
 import { AuthContext } from '../../utils/auth';
 //date
 import moment from "moment";
+//Alert
+import { FMAlert } from '../FMAlert';
 
 
 export const NewIncome = (props:any) => {
@@ -31,9 +33,15 @@ export const NewIncome = (props:any) => {
 
     const Tags = ['Nomina','Bono','Fondo Ahorro','Comisión','Otros'];
     const Types = ['Variable', 'Fijo'];
+    const [openAlert, setOpenAlert] = useState({
+        open:false,
+        title:'',
+        severity:'error',
+        message:''
+    });
 
     useEffect(() => {
-        if(props.data !== undefined) {
+        if(props.data !== '') {
             setIncData({incType: props.data.type, incCat: props.data.category})
         }
       }, [props.data])
@@ -59,7 +67,7 @@ export const NewIncome = (props:any) => {
         type: z.string()
         .nonempty({ message: "Tipo requerido" }),
         comments: z.string(),
-        incAuto: z.boolean(),
+        incAuto: z.boolean().default(false),
     })
 
     //define a variable of the schema previously defined
@@ -87,7 +95,9 @@ export const NewIncome = (props:any) => {
         //function to handle the submit if the validations where successfull  
     const handleInsInc: SubmitHandler<incinput> = (values) => {
         insIncome(props.data.id,values.title,values.account,values.date,values.amount,values.category,values.type,values.comments,values.incAuto,props.selectedAcc.cardId,authContext.token).then(response => {
-            console.log(response);
+            const success = response.data.success;
+            setOpenAlert({open:true,title: success === true ? 'Exito' : 'Error',severity: success === true ? 'success' : 'error',message:response.data.msg});
+            props.onInsPost(success);
         }).catch(error => {
             console.log(error);
         })
@@ -100,7 +110,19 @@ export const NewIncome = (props:any) => {
             return '#26A69A'
         }
     }
+
+    //close Alert Dialog automatically
+    const isOpen = openAlert.open === true;
+    useEffect(() => {
+      if(isOpen) setTimeout(() => setOpenAlert({...openAlert , open:false}), 5000);
+    }, [isOpen]) 
+
+    const handleAlertClose = () => {
+        setOpenAlert({...openAlert , open:false});
+    }
+
   return (
+    <>
     <Card className='card' sx={{overflow: 'auto'}} >
         <CardHeader className='card-title' title={props.data.id !== undefined ? "Editar Ingreso" : "Agregar Ingreso"} sx={{backgroundColor: '#ECEFF1'}} />
         <CardContent>
@@ -261,5 +283,7 @@ export const NewIncome = (props:any) => {
             </Grid>
         </CardActions>
     </Card>
+    <FMAlert open={openAlert.open} AlertClose={handleAlertClose} severity={openAlert.severity} title={openAlert.title} message={openAlert.message}/>
+    </>
   )
 }

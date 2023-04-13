@@ -109,8 +109,8 @@ export const Register = () => {
                                 </Grid>
                                 <Grid item>
                                     <Stack direction='row' spacing={2}>
-                                        <Button variant='outlined' startIcon={<GoogleIcon sx={{color:'#db3236'}}/>} fullWidth sx={{textTransform:'none',borderColor:grey[500],color:grey[800]}} >Google</Button>
-                                        <Button variant='outlined' startIcon={<FacebookIcon sx={{color:'#4267B2'}} />} color='primary' fullWidth sx={{textTransform:'none',borderColor:grey[500],color:grey[800]}}>Facebook</Button>
+                                        <Button onClick={() => window.location.href = "http://localhost:4000/auth/google/financemanager"} variant='outlined' startIcon={<GoogleIcon sx={{color:'#db3236'}}/>} fullWidth sx={{textTransform:'none',borderColor:grey[500],color:grey[800]}} >Google</Button>
+                                        <Button disabled onClick={() => window.location.href = "http://localhost:4000/auth/facebook/financemanager"} variant='outlined' startIcon={<FacebookIcon sx={{color:'#4267B2'}} />} color='primary' fullWidth sx={{textTransform:'none',borderColor:grey[500],color:grey[800]}}>Facebook</Button>
                                     </Stack>
                                 </Grid>
                             </Grid>

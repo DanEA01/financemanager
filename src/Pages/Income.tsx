@@ -51,16 +51,21 @@ export const Income = (props:any) => {
   }
 
   useEffect(() => {
+  if(authContext.token){
+    setopenBackdrop(true);
     getAccounts('Income',authContext.token).then(response => {
       setAccounts(response.data.accounts)
-      if(response.data !== ''){
+      if(response.data.accounts.length > 0){
         setSelectedCard({...selectedCard, cardId: response.data.accounts[0]._id, cardNum:response.data.accounts[0].last4Digits});
         getIncomesAll(response.data.accounts[0]._id);
+        setopenBackdrop(false);
+      }else{
         setopenBackdrop(false);
       }
     }).catch(error => {
       console.log(error);
     })
+  }
   }, [authContext])
 
   useEffect(() => {
@@ -72,7 +77,7 @@ export const Income = (props:any) => {
   }, [filter])
 
   const addAccountDialog = () => {
-    setChoosenForm(<NewAccount data="" id=""/>);
+    setChoosenForm(<NewAccount data="" id="" onAccPost={handleAccPost}/>);
     setopenDialog(true);
   }
 
@@ -81,7 +86,7 @@ export const Income = (props:any) => {
   };
 
   const addIncomeDialog = () => {
-    setChoosenForm(<NewIncome selectedAcc={selectedCard} data=""/>);
+    setChoosenForm(<NewIncome selectedAcc={selectedCard} data="" onInsPost={handleInsPost}/>);
     setopenDialog(true);
   }
 
@@ -101,15 +106,35 @@ export const Income = (props:any) => {
 
   const handleEditAccount = (id:string) => {
     const account = accounts.filter((acc:any) => acc._id === id);
-    setChoosenForm(<NewAccount data={account[0]} id={account[0]._id}/>);
+    setChoosenForm(<NewAccount data={account[0]} id={account[0]._id} onAccPost={handleAccPost}/>);
     setopenDialog(true);
   }
 
   const handleRowClick = (data:object) => {
     console.log(data);
     
-    setChoosenForm(<NewIncome selectedAcc={selectedCard} data={data}/>);
+    setChoosenForm(<NewIncome selectedAcc={selectedCard} data={data} onInsPost={handleInsPost}/>);
     setopenDialog(true);
+  }
+
+  const handleInsPost = (success:any) => {
+    if(success === true){
+      getIncomes(selectedCard.cardId,filter,authContext.token).then(response => {
+        setIncomes(response.data.incomes);
+      }).catch(error => {
+        console.log(error);
+      })
+    }
+  }
+
+  const handleAccPost = (success:any) => {
+    if(success === true){
+      getAccounts('Expense',authContext.token).then(response => {
+        setAccounts(response.data.accounts)
+      }).catch(error => {
+        console.log(error);
+      })
+    }
   }
 
     return (
