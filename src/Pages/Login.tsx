@@ -69,6 +69,7 @@ export const Login = () => {
     const handleLogIn: SubmitHandler<loginput> = (values) => {
         setopenBackdrop(true);
         setLogIn(values.username,values.password).then(response => {
+            console.log(response);
             /* setAuthContext((oldValues: any) => {
                 return { ...oldValues, token: response.data.token, username: response.data.name, email: response.data.email}
             }) */
